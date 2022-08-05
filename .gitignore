@@ -102,4 +102,4 @@ dist
 
 # TernJS port file
 .tern-port
-bitloops-language-0.0.1.vsix
+bitloops-language-*.vsix
