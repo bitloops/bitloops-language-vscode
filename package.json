@@ -1,0 +1,25 @@
+{
+  "name": "bitloops-language",
+  "displayName": "Bitloops Language",
+  "description": "Official Bitloops Language Extension",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.70.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "bitloops",
+      "aliases": ["Bitloops", "bitloops"],
+      "extensions": [".bl"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "bitloops",
+      "scopeName": "source.bitloops",
+      "path": "./syntaxes/bitloops.tmLanguage.json"
+    }]
+  }
+}
