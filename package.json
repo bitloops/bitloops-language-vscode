@@ -2,7 +2,14 @@
   "name": "bitloops-language",
   "displayName": "Bitloops Language",
   "description": "Official Bitloops Language Extension",
-  "version": "0.0.1",
+  "publisher": "Bitloops",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:bitloops/bitloops-language-vscode.git"
+  },
+  "icon": "assets/images/Bitloops-Icon-256x256.png",
+  "license": "MIT",
+  "version": "0.0.2",
   "engines": {
     "vscode": "^1.70.0"
   },
