@@ -13,7 +13,7 @@
 		"keywords": {
 			"patterns": [{
 				"name": "keyword.control.bitloops",
-				"match": "\\b(if|while|for|return)\\b"
+				"match": "\\b(if|while|for|return|ValueObject|DTO|Props|RESTController|UseCase|Feature|string|optional|const|let|boolean)\\b"
 			}]
 		},
 		"strings": {
