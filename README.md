@@ -1,10 +1,10 @@
 # bitloops-language README
 
-This is the README for the "bitloops-language" extension. After writing up a brief description, we recommend including the following sections.
+This is the README for the "bitloops-language" extension.
 
 ## Features
 
-This extension allows for color coding of the Bitloops language syntax.
+This extension allows for color coding of the Bitloops language syntax. You can learn more about the Bitloops language at https://bitloops.org
 
 ## Requirements
 
@@ -24,7 +24,17 @@ No known issues.
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+### 0.0.4
+
+Added additional grammar elements including most protobuf data types
+
+### 0.0.3
+
+Added files icon and added main grammar elements
+
+### 0.0.2
+
+Added icon
 
 ### 0.0.1
 
