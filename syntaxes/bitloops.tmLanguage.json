@@ -13,7 +13,7 @@
 		"keywords": {
 			"patterns": [{
 				"name": "keyword.control.bitloops",
-				"match": "\\b(if|while|for|return|ValueObject|DTO|Props|RESTController|UseCase|Feature|optional|const|let|string|bool|int32|int64|double|float|unit32|uint64|sint32|sint64|fixed32|fixed64|sfixed32|sfixed64|bytes|is|isNot|Error|OK|Struct|enum|switch|case|default|Empty|null)\\b"
+				"match": "\\b(if|while|for|return|ValueObject|DTO|Props|RESTController|RESTRouter|UseCase|Feature|optional|const|let|string|bool|int32|int64|double|float|unit32|uint64|sint32|sint64|fixed32|fixed64|sfixed32|sfixed64|bytes|is|isNot|Error|DomainError|DomainErrors|ApplicationError|ApplicationErrors|Config|OK|Struct|enum|switch|case|default|Empty|null|env|new)\\b"
 			}]
 		},
 		"strings": {

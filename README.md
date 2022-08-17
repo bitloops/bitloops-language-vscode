@@ -24,6 +24,10 @@ No known issues.
 
 ## Release Notes
 
+### 0.0.5
+
+Added additional grammar elements (RESTRouter, env, new, DomainError, ApplicationError, Config)
+
 ### 0.0.4
 
 Added additional grammar elements including most protobuf data types
