@@ -7,9 +7,9 @@
     "type": "git",
     "url": "git@github.com:bitloops/bitloops-language-vscode.git"
   },
-  "icon": "assets/images/Bitloops-Icon-256x256.png",
+  "icon": "https://github.com/bitloops/bitloops-language-vscode/blob/main/assets/images/bitloops-language-logo-256x256.png",
   "license": "MIT",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "scripts": {
     "vs:package": "vsce package",
     "vs:publish": "vsce publish"
@@ -27,8 +27,8 @@
       "extensions": [".bl"],
       "configuration": "./language-configuration.json",
       "icon": {
-        "light": "./assets/images/bitloops-language-logo@3x.png",
-        "dark": "./assets/images/bitloops-language-logo@3x.png"
+        "light": "./assets/images/bitloops-language-bl-logo@3x.png",
+        "dark": "./assets/images/bitloops-language-bl-logo@3x.png"
       }
     }],
     "grammars": [{
