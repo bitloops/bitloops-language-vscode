@@ -1,277 +1,83 @@
 {
-  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-  "fileTypes": [
-    "bl"
-  ],
-  "name": "bitloops",
-  "patterns": [
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Bitloops",
+	"patterns": [
+		{
+			"include": "#keywords"
+		},
     {
-      "include": "#main"
-    }
-  ],
-  "scopeName": "source.bitloops",
-  "repository": {
-    "main": {
-      "patterns": [
-        {
-          "match": "(\b(if|while|for|return|ValueObject|DTO|Props|RESTController|RESTRouter|UseCase|Feature|optional|const|let|isBrokenIf|isNotBrokenIf|Config|enum|switch|case|default|Empty|null|env|concretes|implements|extends)\b)",
-          "name": "keyword.bitloops"
-        },
-        {
-          "include": "#numeric"
-        },
-        {
-          "begin": "(\{)",
-          "beginCaptures": {
-            "1": {
-              "name": "punctuation.bitloops"
-            }
-          },
-          "patterns": [
-            {
-              "include": "#main__1"
-            }
-          ],
-          "end": "(\})",
-          "endCaptures": {
-            "1": {
-              "name": "punctuation.bitloops"
-            }
-          }
-        },
-        {
-          "begin": "(\()",
-          "beginCaptures": {
-            "1": {
-              "name": "punctuation.bitloops"
-            }
-          },
-          "patterns": [
-            {
-              "include": "#main__2"
-            }
-          ],
-          "end": "(\))",
-          "endCaptures": {
-            "1": {
-              "name": "punctuation.bitloops"
-            }
-          }
-        },
-        {
-          "match": "(;)",
-          "name": "punctuation.bitloops"
-        },
-        {
-          "match": "(\([\x{0020}]*OK[\x{0020}]*\([\x{0020}]*([A-Z]+[a-zA-Z0-9]*(DTO|UseCase|Aggregate|VO|Entity)[\x{0020}]*)\)[\x{0020}]*,[\x{0020}]*Errors[\x{0020}]*[\x{0020}]*\([\x{0020}]*(((DomainErrors|ApplicationErrors)[\.]([A-Z]+[a-zA-Z0-9]*(Error)))([\x{0020}]*[\x{002c}][\x{0020}]*((DomainError|ApplicationErrors)[\.](\b[A-Z]+[a-zA-Z0-9]*(Error)\b)))*)?[\x{0020}]*\)[\x{0020}]*\))",
-          "name": "keyword.bitloops"
-        },
-        {
-          "match": "(=|:|\+|-|,|\.)",
-          "name": "punctuation.bitloops"
-        },
-        {
-          "match": "(\b[A-Z]+[a-zA-Z0-9]*(DTO|UseCase|Aggregate|VO|Entity|Error|RESTController|RESTRouter|GraphQLController|Feature|Mapper|RepoPort|RepoAdapter|PackagePort|PackageAdapter)\b)",
-          "name": "text.bitloops"
-        },
-        {
-          "match": "(\b(DTO|UseCase|Aggregate|Entity|OK|Errors|ValueObject|Props|RESTController|RESTRouter|GraphQLController|Feature|Mapper|RepoPort|RepoAdapter|PackagePort|PackageAdapter|ApplicationErrors|DomainErrors|DomainError|ApplicationError)\b)",
-          "name": "keyword.bitloops"
-        },
-        {
-          "begin": "(\\")",
-          "beginCaptures": {
-            "1": {
-              "name": "punctuation.bitloops"
-            }
-          },
-          "contentName": "text.bitloops",
-          "end": "(\\")",
-          "endCaptures": {
-            "1": {
-              "name": "punctuation.bitloops"
-            }
-          }
-        },
-        {
-          "begin": "(')",
-          "beginCaptures": {
-            "1": {
-              "name": "punctuation.bitloops"
-            }
-          },
-          "contentName": "text.bitloops",
-          "end": "(')",
-          "endCaptures": {
-            "1": {
-              "name": "punctuation.bitloops"
-            }
-          }
-        },
-        {
-          "begin": "(`)",
-          "beginCaptures": {
-            "1": {
-              "name": "punctuation.bitloops"
-            }
-          },
-          "patterns": [
-            {
-              "include": "#main__5"
-            }
-          ],
-          "end": "(`)",
-          "endCaptures": {
-            "1": {
-              "name": "punctuation.bitloops"
-            }
-          }
-        },
-        {
-          "begin": "(\()",
-          "beginCaptures": {
-            "1": {
-              "name": "punctuation.bitloops"
-            }
-          },
-          "patterns": [
-            {
-              "include": "#main__6"
-            }
-          ],
-          "end": "(\))",
-          "endCaptures": {
-            "1": {
-              "name": "punctuation.bitloops"
-            }
-          }
-        },
-        {
-          "include": "#multi_line_comment"
-        },
-        {
-          "match": "(//.*)",
-          "name": "comment.bitloops"
-        },
-        {
-          "match": "(string|bool|int32|int64|double|float|unit32|uint64|sint32|sint64|fixed32|fixed64|sfixed32|sfixed64|bytes)",
-          "name": "text.bitloops"
-        },
-        {
-          "match": "(\boptional\b)",
-          "name": "text.bitloops"
-        },
-        {
-          "match": "(\b[a-z][a-zA-Z0-9]*\b)",
-          "name": "text.bitloops"
-        },
-        {
-          "match": "(private)",
-          "name": "text.bitloops"
-        },
-        {
-          "match": "(Struct)",
-          "name": "text.bitloops"
-        },
-        {
-          "match": "([^\s])",
-          "name": "invalid.bitloops"
-        }
-      ]
-    },
-    "backtick_variable_wrapper": {
-      "patterns": [
-        {
-          "begin": "(\${)",
-          "beginCaptures": {
-            "1": {
-              "name": "punctuation.bitloops"
-            }
-          },
-          "contentName": "text.bitloops",
-          "end": "(})",
-          "endCaptures": {
-            "1": {
-              "name": "punctuation.bitloops"
-            }
-          }
-        }
-      ]
-    },
-    "backtick_variable_wrapper__1": {
-      "patterns": []
-    },
-    "main__1": {
-      "patterns": [
-        {
-          "include": "#main"
-        }
-      ]
-    },
-    "main__2": {
-      "patterns": [
-        {
-          "include": "#main"
-        }
-      ]
-    },
-    "main__3": {
-      "patterns": []
-    },
-    "main__4": {
-      "patterns": []
-    },
-    "main__5": {
-      "patterns": [
-        {
-          "include": "#backtick_variable_wrapper"
-        },
-        {
-          "match": "([A-Za-z0-9\.\,\+\-\:\x{003d}])",
-          "name": "text.bitloops"
-        }
-      ]
-    },
-    "main__6": {
-      "patterns": [
-        {
-          "include": "#numeric"
-        },
-        {
-          "match": "(,)",
-          "name": "punctuation.bitloops"
-        }
-      ]
-    },
-    "multi_line_comment": {
-      "patterns": [
-        {
-          "begin": "(/\*)",
-          "beginCaptures": {
-            "1": {
-              "name": "comment.bitloops"
-            }
-          },
-          "contentName": "comment.bitloops",
-          "end": "(\*/)",
-          "endCaptures": {
-            "1": {
-              "name": "comment.bitloops"
-            }
-          }
-        }
-      ]
-    },
-    "multi_line_comment__1": {
-      "patterns": []
-    },
+			"include": "#numeric"
+		},
+		{
+			"include": "#strings"
+		},
+    {
+			"include": "#comments"
+		},
+    {
+			"include": "#bitloopsClasses"
+		},
+    {
+			"include": "#myClasses"
+		}
+	],
+	"repository": {
+		"keywords": {
+			"patterns": [{
+				"name": "keyword.control.bitloops",
+				"match": "\\b(const|let|continue|break|return|concretes|implements|extends)\\b"
+			}]
+		},
     "numeric": {
+      "patterns": [{
+        "name": "constant.numeric.bitloops",
+        "match": "\\b(0x[0-9a-fA-F]+|0b[01]+|\\d+)\\b"
+      }]
+    },
+    "bitloopsClasses": {
+			"patterns": [{
+				"name": "keyword.control.templateClass.bitloops",
+				"match": "\\b(Config|(REST\\.Methods)|REST|DTO|UseCase|Aggregate|Entity|OK|Errors|ValueObject|Props|RESTController|RESTRouter|GraphQLController|Feature|Mapper|RepoPort|RepoAdapter|PackagePort|PackageAdapter|ApplicationErrors|DomainErrors|DomainError|ApplicationError)\\b"
+			}]
+		},
+    "myClasses": {
+			"patterns": [{
+				"name": "entity.name.class.bitloops",
+				"match": "\\b[A-Z]+[a-zA-Z0-9]*(DTO|UseCase|Aggregate|VO|Entity|Error|Controller|Router|Feature|Mapper|RepoPort|RepoAdapter|PackagePort|PackageAdapter|Error)\\b"
+			}]
+		},
+		"strings": {
+			"patterns": [
+        {
+          "name": "string.quoted.double.bitloops",
+          "begin": "\"",
+          "end": "\""
+        },
+        {
+          "name": "string.quoted.single.bitloops",
+          "begin": "'",
+          "end": "'"
+        },
+        {
+          "name": "string.quoted.backtick.bitloops",
+          "begin": "`",
+          "end": "`"
+        }
+      ]
+		},
+    "comments": {
       "patterns": [
         {
-          "match": "(\b\d+.?\d*)",
-          "name": "constant.numeric.bitloops"
+          "name": "comment.line.double-slash.bitloops",
+          "match": "//.*$"
+        },
+        {
+          "name": "comment.block.bitloops",
+          "begin": "/\\*",
+          "end": "\\*/"
         }
       ]
     }
-  }
+	},
+	"scopeName": "source.bitloops"
 }

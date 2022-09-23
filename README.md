@@ -24,6 +24,14 @@ No known issues.
 
 ## Release Notes
 
+### 0.0.7
+
+New logos and much greater syntax coverage
+
+### 0.0.6
+
+This version should not be used as it contains errors
+
 ### 0.0.5
 
 Added additional grammar elements (RESTRouter, env, new, DomainError, ApplicationError, Config)

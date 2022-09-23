@@ -1,0 +1,372 @@
+#################################################################
+## Iro
+################################################################ 
+##
+## * Press Ctrl + '+'/'-' To Zoom in
+## * Press Ctrl + S to save and recalculate... 
+## * Documents are saved to web storage.
+## * Only one save slot supported.
+## * Matches cannot span lines.
+## * Unicode chars must be defined in \u0000 to \uffff format.
+## * All matches must be contained by a single group ( ... )
+## * Look behinds not permitted, (?<= or (?<!
+## * Look forwards are permitted (?= or (?!
+## * Constants are defined as __my_const = (......)
+## * The \= format allows unescaped regular expressions
+## * Constants referenced by match \= $${__my_const}
+## * Constants can reference other constants
+## * You are free to delete all the default scopes.
+## * Twitter : ainslec , Web: http://eeyo.io/iro
+##
+################################################################
+
+name                   = bitloops
+file_extensions []     = bl;
+
+################################################################
+## Constants
+################################################################
+
+__MY_CONSTANT \= (\b[a-z][a-z0-9]*)
+__KEYWORDS \= (\b(const|let|continue|break|return|concretes|implements|extends)\b)
+__MY_CLASSES \= (\b[A-Z]+[a-zA-Z0-9]*(DTO|UseCase|Aggregate|VO|Entity|Error|RESTController|RESTRouter|GraphQLController|Feature|Mapper|RepoPort|RepoAdapter|PackagePort|PackageAdapter|Error)\b)
+__OK_ERRORS \= (\([ ]*OK[ ]*\([ ]*([A-Z]+[a-zA-Z0-9]*(DTO|UseCase|Aggregate|VO|Entity)[ ]*)\)[ ]*,[ ]*Errors[ ]*[ ]*\([ ]*(((DomainErrors.|ApplicationErrors.)([A-Z]+[a-zA-Z0-9]*(Error)))([ ]*[,][ ]*((DomainErrors.|ApplicationErrors.)([A-Z]+[a-zA-Z0-9]*(Error))))*)?[ ]*\)[ ]*\))
+__BITLOOP_CLASSES \= (\b(DTO|UseCase|Aggregate|Entity|OK|Errors|ValueObject|Props|RESTController|RESTRouter|GraphQLController|Feature|Mapper|RepoPort|RepoAdapter|PackagePort|PackageAdapter|ApplicationErrors|DomainErrors|DomainError|ApplicationError)\b)
+__OPTIONAL_MODIFIER \= (\boptional\b)
+__MY_VARIABLE \= (\b[a-z][a-zA-Z0-9]*\b)
+__OPERATORS \= (=|:|\+|-|,|\.)
+
+################################################################
+## Styles
+################################################################
+
+styles [] {
+
+.comment : style {
+   color                 = light_green
+   italic                = true
+   ace_scope             = comment
+   textmate_scope        = comment
+   pygments_scope        = Comment
+}
+
+.keyword : style {
+   color                 = light_blue
+   ace_scope             = keyword
+   textmate_scope        = keyword
+   pygments_scope        = Keyword
+}
+
+.okErrors : style {
+   color                 = cyan
+   ace_scope             = keyword
+   textmate_scope        = keyword
+   pygments_scope        = Keyword
+}
+
+.bitloopsClass : style {
+   color                 = light_blue
+   ace_scope             = keyword
+   textmate_scope        = keyword
+   pygments_scope        = Keyword
+}
+
+.className : style {
+   color                 = cyan
+   ace_scope             = text
+   textmate_scope        = text
+   pygments_scope        = String
+}
+
+.struct : style {
+   color                 = white
+   ace_scope             = text
+   textmate_scope        = text
+   pygments_scope        = String
+}
+
+.optionalModifier : style {
+   color                 = white
+   ace_scope             = text
+   textmate_scope        = text
+   pygments_scope        = String
+}
+
+.accessModifiers : style {
+   color                 = white
+   ace_scope             = text
+   textmate_scope        = text
+   pygments_scope        = String
+}
+
+.primitives : style {
+   color                 = white
+   ace_scope             = text
+   textmate_scope        = text
+   pygments_scope        = String
+}
+
+.variable : style {
+   color                 = white
+   ace_scope             = text
+   textmate_scope        = text
+   pygments_scope        = String
+}
+
+.numeric : style {
+   color                 = gold
+   ace_scope             = constant.numeric
+   textmate_scope        = constant.numeric
+   pygments_scope        = Number
+}
+
+.punctuation : style {
+   color                 = white
+   ace_scope             = punctuation
+   textmate_scope        = punctuation
+   pygments_scope        = Punctuation
+}
+
+.brackets : style {
+   color                 = gold
+   ace_scope             = punctuation
+   textmate_scope        = punctuation
+   pygments_scope        = Punctuation
+}
+
+.parenthesis : style {
+   color                 = light_blue
+   ace_scope             = punctuation
+   textmate_scope        = punctuation
+   pygments_scope        = Punctuation
+}
+
+.backTickVariableWrapper : style {
+   color                 = light_blue
+   ace_scope             = punctuation
+   textmate_scope        = punctuation
+   pygments_scope        = Punctuation
+}
+
+.operators : style {
+   color                 = white
+   ace_scope             = punctuation
+   textmate_scope        = punctuation
+   pygments_scope        = Punctuation
+}
+
+.text : style {
+   color                 = brown
+   ace_scope             = text
+   textmate_scope        = text
+   pygments_scope        = String
+}
+
+.illegal : style {
+   color                 = white
+   background_color      = red
+   ace_scope             = invalid
+   textmate_scope        = invalid
+   pygments_scope        = Generic.Error
+}
+
+}
+
+#################################################
+## Parse contexts
+#################################################
+
+contexts [] {
+
+##############################################
+## Main Context - Entry point context
+##############################################
+
+main : context {
+
+   : pattern {
+      regex          \= $${__KEYWORDS}
+      styles []       = .keyword;
+   }
+   
+   : include "numeric" ;
+   
+   : inline_push {
+      regex          \= (\{)
+      styles []       = .brackets;
+      : pop {  
+         regex       \= (\})
+         styles []    = .brackets;
+      }
+      : include "main" ;
+   }
+   
+   : inline_push {
+      regex          \= (\()
+      styles []       = .parenthesis;
+      : pop {  
+         regex       \= (\))
+         styles []    = .parenthesis;
+      }
+      : include "main" ;
+   }
+   
+   : pattern {
+      regex          \= (;)
+      styles []       = .punctuation;
+   }
+   
+   : pattern {
+      regex          \= $${__OK_ERRORS}
+      styles []       = .okErrors;
+   }
+   
+   : pattern {
+      regex          \= $${__OPERATORS}
+      styles []       = .operators;
+   }
+   
+   : pattern {
+      regex          \= $${__MY_CLASSES}
+      styles []       = .className;
+   }
+   
+   : pattern {
+      regex          \= $${__BITLOOP_CLASSES}
+      styles []       = .bitloopsClass;
+   }
+   
+   : inline_push {
+      regex          \= (\")
+      styles []       = .punctuation;
+      default_style   = .text
+      : pop {
+         regex       \= (\")
+         styles []    = .punctuation;
+      }
+   }
+   
+   : inline_push {
+      regex          \= (')
+      styles []       = .punctuation;
+      default_style   = .text
+      : pop {
+         regex       \= (')
+         styles []    = .punctuation;
+      }
+   }
+   
+   : inline_push {
+      regex          \= (`)
+      styles []       = .punctuation;
+      // default_style   = .text
+      : pop {
+         regex       \= (`)
+         styles []    = .punctuation;
+      }
+      : include "backtick_variable_wrapper" ;
+      : pattern {
+         regex       \= ([A-Za-z0-9\.\,\+\-\:=])
+         styles []    = .text;
+      }
+   }
+   
+   : inline_push {
+      regex          \= (\()
+      styles []       = .punctuation;
+      : pop {
+         regex       \= (\))
+         styles []    = .punctuation;
+      }
+      : include "numeric" ;
+      : pattern {
+         regex       \= (,)
+         styles []    = .punctuation;
+      }
+   }
+   
+   : include "multi_line_comment" ;
+   
+   : pattern {
+      regex          \= (//.*)
+      styles []       = .comment;
+   }
+   
+   : pattern {
+      regex          \= (string|bool|int32|int64|double|float|unit32|uint64|sint32|sint64|fixed32|fixed64|sfixed32|sfixed64|bytes)
+      styles []       = .primitives;
+   }
+   
+   : pattern {
+      regex          \= $${__OPTIONAL_MODIFIER}
+      styles []       = .optionalModifier;
+   }
+   
+   : pattern {
+      regex          \= $${__MY_VARIABLE}
+      styles []       = .variable;
+   }
+   
+   : pattern {
+      regex          \= (private)
+      styles []       = .accessModifiers;
+   }
+   
+   : pattern {
+      regex          \= (Struct)
+      styles []       = .struct;
+   }
+   
+   : pattern {
+      regex          \= ([^\s])
+      styles []       = .illegal;
+   }
+   
+}
+
+#################################################
+## End of Contexts
+#################################################
+
+###########################################
+## Numeric Context
+###########################################
+
+numeric : context {
+   : pattern {
+      regex          \= (\b\d+.?\d*)
+      styles []       = .numeric;
+   }
+}
+
+###########################################
+## Multi Line Comment Context
+###########################################
+
+multi_line_comment : context {
+   description        = multiline
+   : inline_push {
+      regex          \= (/\*)
+      styles []       = .comment;
+      default_style   = .comment
+      : pop {
+         regex       \= (\*/)
+         styles []    = .comment;
+      }
+   }
+}
+
+backtick_variable_wrapper: context {
+   description        = singleline
+   : inline_push {
+      regex          \= (\${)
+      styles []       = .backTickVariableWrapper;
+      default_style   = .variable
+      : pop {
+         regex       \= (})
+         styles []    = .backTickVariableWrapper;
+      }
+   }
+}
+   
+}
