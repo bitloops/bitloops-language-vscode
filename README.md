@@ -24,6 +24,10 @@ No known issues.
 
 ## Release Notes
 
+### 0.0.8
+
+Added missing language elements and relational operators
+
 ### 0.0.7
 
 New logos and much greater syntax coverage
