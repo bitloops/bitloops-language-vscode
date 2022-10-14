@@ -24,6 +24,10 @@ No known issues.
 
 ## Release Notes
 
+### 0.0.9
+
+Fixed issue #5 causing comments not to display properly
+
 ### 0.0.8
 
 Added missing language elements and relational operators

@@ -3,9 +3,6 @@
   "name": "Bitloops",
   "patterns": [
     {
-      "include": "#keywords"
-    },
-    {
       "include": "#numeric"
     },
     {
@@ -18,13 +15,16 @@
       "include": "#variables"
     },
     {
-      "include": "#comments"
-    },
-    {
       "include": "#bitloopsClasses"
     },
     {
       "include": "#myClasses"
+    },
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#keywords"
     }
   ],
   "repository": {
@@ -119,7 +119,7 @@
       "patterns": [
         {
           "name": "comment.line.double-slash.bitloops",
-          "match": "//.*$"
+          "match": "\\/\\/.*?$"
         },
         {
           "name": "comment.block.bitloops",
