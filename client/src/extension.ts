@@ -6,12 +6,7 @@
 import * as path from 'path';
 import { workspace, ExtensionContext } from 'vscode';
 
-import {
-  LanguageClient,
-  LanguageClientOptions,
-  ServerOptions,
-  TransportKind,
-} from 'vscode-languageclient/node';
+import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient/node';
 
 let client: LanguageClient;
 
@@ -46,7 +41,7 @@ export function activate(context: ExtensionContext) {
 
   // Create the language client and start the client.
   client = new LanguageClient('Bitloops LSP', 'Bitloops LSP', serverOptions, clientOptions);
-  console.log(client);
+  // console.log(client);
 
   // Start the client. This will also launch the server
   client.start();

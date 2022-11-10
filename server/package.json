@@ -1,5 +1,6 @@
 {
   "name": "bitloops-lsp-server",
+  "type": "module",
   "description": "BitLoops Language Server",
   "version": "1.0.0",
   "publisher": "Bitloops",
