@@ -5,7 +5,7 @@ export class DiagnosticFactory {
     severity: 1 | 2 | 3 | 4,
     range: Range,
     message: string,
-    addRelatedInformation?: string[],
+    addRelatedInformation?: string[]
   ): Diagnostic {
     message = this.prefixMessage(message, severity);
     const diagnostic: Diagnostic = {

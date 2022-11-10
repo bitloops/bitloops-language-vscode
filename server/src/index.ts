@@ -14,19 +14,18 @@ let hasDiagnosticRelatedInformationCapability = false;
 const connection = createConnection(ProposedFeatures.all);
 connection.onInitialize(onInitialize);
 connection.onInitialized(onInitialized);
-new BitloopsServer(
+const server = new BitloopsServer(
   connection,
   hasConfigurationCapability,
   hasWorkspaceFolderCapability,
-  hasDiagnosticRelatedInformationCapability,
+  hasDiagnosticRelatedInformationCapability
 );
+server.register();
 
 function onInitialize(params: InitializeParams): InitializeResult {
   const capabilities = params.capabilities;
   hasConfigurationCapability = !!(capabilities.workspace && !!capabilities.workspace.configuration);
-  hasWorkspaceFolderCapability = !!(
-    capabilities.workspace && !!capabilities.workspace.workspaceFolders
-  );
+  hasWorkspaceFolderCapability = !!(capabilities.workspace && !!capabilities.workspace.workspaceFolders);
   hasDiagnosticRelatedInformationCapability = !!(
     capabilities.textDocument &&
     capabilities.textDocument.publishDiagnostics &&

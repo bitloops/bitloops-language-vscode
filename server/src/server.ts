@@ -2,23 +2,7 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License. See License.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
-import {
-  createConnection,
-  TextDocuments,
-  Diagnostic,
-  DiagnosticSeverity,
-  ProposedFeatures,
-  InitializeParams,
-  DidChangeConfigurationNotification,
-  CompletionItem,
-  CompletionItemKind,
-  TextDocumentPositionParams,
-  TextDocumentSyncKind,
-  InitializeResult,
-  Connection,
-  NotificationHandler,
-  DidChangeWatchedFilesParams,
-} from 'vscode-languageserver/node';
+import { createConnection, TextDocuments, ProposedFeatures, Connection } from 'vscode-languageserver/node';
 
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { BitloopsCompletionItemProvider } from './completion';
@@ -29,33 +13,24 @@ import { lint } from './linter';
 const connection = createConnection(ProposedFeatures.all);
 
 export class BitloopsServer {
-  protected connection: Connection;
-  protected hasConfigurationCapability: boolean;
-  protected hasWorkspaceFolderCapability: boolean;
-  protected hasDiagnosticRelatedInformationCapability: boolean;
   protected documents: TextDocuments<TextDocument>;
   constructor(
-    connection: Connection,
-    hasConfigurationCapability: boolean,
-    hasWorkspaceFolderCapability: boolean,
-    hasDiagnosticRelatedInformationCapability: boolean,
+    protected connection: Connection,
+    protected hasConfigurationCapability: boolean,
+    protected hasWorkspaceFolderCapability: boolean,
+    protected hasDiagnosticRelatedInformationCapability: boolean
   ) {
-    this.connection = connection;
     this.documents = new TextDocuments(TextDocument);
-    this.hasConfigurationCapability = hasConfigurationCapability;
-    this.hasWorkspaceFolderCapability = hasWorkspaceFolderCapability;
-    this.hasDiagnosticRelatedInformationCapability = hasDiagnosticRelatedInformationCapability;
-    this.register();
   }
 
-  private register() {
+  public register() {
     this.documents.onDidClose(onDidClose);
     this.documents.onDidChangeContent((change) => {
       lint(
         change.document,
         this.hasConfigurationCapability,
         this.hasDiagnosticRelatedInformationCapability,
-        this.connection,
+        this.connection
       );
     });
 
