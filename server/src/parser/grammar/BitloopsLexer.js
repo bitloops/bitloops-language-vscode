@@ -1,4 +1,4 @@
-// Generated from src/parser/core/grammar/BitloopsLexer.g4 by ANTLR 4.10.1
+// Generated from src/parser/grammar/BitloopsLexer.g4 by ANTLR 4.10.1
 // jshint ignore: start
 import antlr4 from 'antlr4';
 
