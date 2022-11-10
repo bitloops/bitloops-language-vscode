@@ -1,13 +1,7 @@
-import {
-  CompletionItem,
-  CompletionItemKind,
-  Connection,
-  TextDocumentPositionParams,
-} from 'vscode-languageserver/node';
-import { BitloopsServer } from './server';
-import { documentation } from './information/documentation';
-import { details } from './information/details';
-import { components } from './types/keywords';
+import { CompletionItem, CompletionItemKind, TextDocumentPositionParams } from 'vscode-languageserver/node.js';
+import { documentation } from './information/documentation.js';
+import { details } from './information/details.js';
+import { components } from './types/keywords.js';
 
 export class BitloopsCompletionItemProvider {
   // constructor(connection: Connection) {

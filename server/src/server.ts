@@ -2,12 +2,12 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License. See License.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
-import { createConnection, TextDocuments, ProposedFeatures, Connection } from 'vscode-languageserver/node';
+import { createConnection, TextDocuments, ProposedFeatures, Connection } from 'vscode-languageserver/node.js';
 
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { BitloopsCompletionItemProvider } from './completion';
-import { getDocumentSettings, onDidClose } from './setings';
-import { lint } from './linter';
+import { BitloopsCompletionItemProvider } from './completion.js';
+import { getDocumentSettings, onDidClose } from './setings.js';
+import { lint } from './linter.js';
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
 const connection = createConnection(ProposedFeatures.all);

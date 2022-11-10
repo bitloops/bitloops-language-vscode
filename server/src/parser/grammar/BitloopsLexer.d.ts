@@ -1,10 +1,11 @@
-declare class BitloopsLexer extends BitloopsLexerBase {
+declare class BitloopsLexer {
     static grammarFileName: string;
     static channelNames: string[];
     static modeNames: string[];
     static literalNames: string[];
     static symbolicNames: string[];
     static ruleNames: string[];
+    constructor(input: any);
     _interp: antlr4.atn.LexerATNSimulator;
     get atn(): antlr4.atn.ATN;
     action(localctx: any, ruleIndex: any, actionIndex: any): void;
@@ -12,9 +13,9 @@ declare class BitloopsLexer extends BitloopsLexerBase {
     CloseBrace_action(localctx: any, actionIndex: any): void;
     BackTick_action(localctx: any, actionIndex: any): void;
     BackTickInside_action(localctx: any, actionIndex: any): void;
-    sempred(localctx: any, ruleIndex: any, predIndex: any): boolean;
-    RegularExpressionLiteral_sempred(localctx: any, predIndex: any): boolean;
-    TemplateCloseBrace_sempred(localctx: any, predIndex: any): boolean;
+    sempred(localctx: any, ruleIndex: any, predIndex: any): any;
+    RegularExpressionLiteral_sempred(localctx: any, predIndex: any): any;
+    TemplateCloseBrace_sempred(localctx: any, predIndex: any): any;
 }
 declare namespace BitloopsLexer {
     const EOF: -1;
@@ -249,5 +250,4 @@ declare namespace BitloopsLexer {
     const TEMPLATE: number;
 }
 export default BitloopsLexer;
-import BitloopsLexerBase from "./BitloopsLexerBase.js";
 import antlr4 from "antlr4";

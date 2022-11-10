@@ -1,4 +1,5 @@
-import { Range, TextDocument } from 'vscode-languageserver/node';
+import { TextDocument } from 'vscode-languageserver-textdocument';
+import { Range } from 'vscode-languageserver/node.js';
 
 export const negateRegex = (re: RegExp): RegExp => {
   return new RegExp(`^(?!${re.source})`, 'g');

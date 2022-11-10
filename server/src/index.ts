@@ -5,8 +5,8 @@ import {
   InitializeResult,
   ProposedFeatures,
   TextDocumentSyncKind,
-} from 'vscode-languageserver/node';
-import { BitloopsServer } from './server';
+} from 'vscode-languageserver/node.js';
+import { BitloopsServer } from './server.js';
 let hasConfigurationCapability = false;
 let hasWorkspaceFolderCapability = false;
 let hasDiagnosticRelatedInformationCapability = false;

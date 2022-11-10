@@ -1,9 +1,9 @@
 import { Diagnostic } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { DiagnosticFactory } from './diagnostic';
-import { EErrors } from './types/Errors';
-import { components } from './types/keywords';
-import { getMatchRange } from './utils/regex';
+import { DiagnosticFactory } from './diagnostic.js';
+import { EErrors } from './types/Errors.js';
+import { components } from './types/keywords.js';
+import { getMatchRange } from './utils/regex.js';
 
 export interface IAnalyzer {
   analyze(document: TextDocument): Diagnostic[];

@@ -1,4 +1,4 @@
-import { Diagnostic, DiagnosticSeverity, Range, TextDocument } from 'vscode-languageserver/node';
+import { Diagnostic, DiagnosticSeverity, Range, TextDocument } from 'vscode-languageserver/node.js';
 
 export class DiagnosticFactory {
   public static create(
