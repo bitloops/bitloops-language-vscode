@@ -1,5 +1,5 @@
 export const enum EErrors {
   InvalidSyntax = 'Invalid syntax',
   NoArgs = 'Expected (',
-  NoIdentifier = 'Expected indentifier',
+  NoIdentifier = 'Expected identifier',
 }
