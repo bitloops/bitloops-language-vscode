@@ -1,7 +1,7 @@
-export default class JavaScriptLexerBase {
+export default class JavaScriptLexerBase extends antlr4.Lexer {
   constructor(input: any);
   scopeStrictModes: any[];
-  lastToken: any;
+  lastToken: antlr4.Token;
   useStrictDefault: boolean;
   useStrictCurrent: boolean;
   templateDepth: number;
@@ -9,8 +9,7 @@ export default class JavaScriptLexerBase {
   setUseStrictDefault(value: any): void;
   IsStrictMode(): boolean;
   IsInTemplateString(): boolean;
-  getCurrentToken(): any;
-  nextToken(): any;
+  getCurrentToken(): antlr4.Token;
   ProcessOpenBrace(): void;
   ProcessCloseBrace(): void;
   ProcessStringLiteral(): void;
@@ -19,3 +18,4 @@ export default class JavaScriptLexerBase {
   IsRegexPossible(): boolean;
   IsStartOfFile(): boolean;
 }
+import antlr4 from 'antlr4';

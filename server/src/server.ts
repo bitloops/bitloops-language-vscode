@@ -1,88 +1,101 @@
-/* --------------------------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Licensed under the MIT License. See License.txt in the project root for license information.
- * ------------------------------------------------------------------------------------------ */
-import { createConnection, TextDocuments, ProposedFeatures, Connection } from 'vscode-languageserver/node.js';
+import {
+  TextDocuments,
+  TextDocumentChangeEvent,
+  _Connection,
+  InitializeParams,
+  InitializeResult,
+  TextDocumentSyncKind,
+  DidChangeConfigurationNotification,
+} from 'vscode-languageserver/node.js';
 
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { BitloopsCompletionItemProvider } from './completion.js';
-import { getDocumentSettings, onDidClose } from './setings.js';
-import { lint } from './linter.js';
+import { CompletionItemProvider } from './completion.js';
+import { WorkspaceSettingsManager } from './settings.js';
+import { IAnalyzer } from './analyzer.js';
+import { ILspClient } from './lsp-client.js';
+import { ANTLR4Analyzer } from './parser/index.js';
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
-const connection = createConnection(ProposedFeatures.all);
 
+/**
+ * Abstract every direct interaction with the connection
+ * to this class.
+ */
 export class BitloopsServer {
-  protected documents: TextDocuments<TextDocument>;
-  constructor(
-    protected connection: Connection,
-    protected hasConfigurationCapability: boolean,
-    protected hasWorkspaceFolderCapability: boolean,
-    protected hasDiagnosticRelatedInformationCapability: boolean
-  ) {
-    this.documents = new TextDocuments(TextDocument);
+  private connection: _Connection;
+  private settingsManger: WorkspaceSettingsManager;
+  private analyzer: IAnalyzer;
+  private lspClient: ILspClient;
+
+  // Default Global Settings
+  private hasConfigurationCapability = false;
+  private hasWorkspaceFolderCapability = false;
+  private hasDiagnosticRelatedInformationCapability = false;
+
+  constructor(lspClient: ILspClient, connection: _Connection) {
+    // Create a simple text document manager.
+    this.connection = connection;
+    this.lspClient = lspClient;
+    this.settingsManger = new WorkspaceSettingsManager();
+    this.analyzer = new ANTLR4Analyzer();
   }
 
-  public register() {
-    this.documents.onDidClose(onDidClose);
-    this.documents.onDidChangeContent((change) => {
-      lint(
-        change.document,
-        this.hasConfigurationCapability,
-        this.hasDiagnosticRelatedInformationCapability,
-        this.connection
-      );
-    });
+  public async onDidChangeContent(change: TextDocumentChangeEvent<TextDocument>): Promise<void> {
+    const settings = await this.settingsManger.getDocumentSettings(
+      change.document.uri,
+      this.hasConfigurationCapability,
+      this.connection,
+    );
+    // We could use retrieved settings here to change the way we parse the document
 
-    this.connection.onDidChangeWatchedFiles(this.onDidChangedWatchedFiles);
-    this.connection.onCompletion(BitloopsCompletionItemProvider.onCompletion);
-    this.connection.onCompletionResolve(BitloopsCompletionItemProvider.onCompletionResolve);
-    // Listen on the connection
-    this.connection.listen();
-    this.documents.listen(this.connection);
+    const diagnostics = this.analyzer.analyze(change.document);
+    this.lspClient.publishDiagnostics({ uri: change.document.uri, diagnostics });
   }
 
-  // connection.onDidChangeConfiguration((change) => {
-  //   if (hasConfigurationCapability) {
-  //     // Reset all cached document settings
-  //     documentSettings.clear();
-  //   } else {
-  //     globalSettings = <ExampleSettings>(change.settings.BitloopsServer || defaultSettings);
-  //   }
+  public onInitialize(params: InitializeParams): InitializeResult {
+    const capabilities = params.capabilities;
+    this.hasConfigurationCapability = !!(
+      capabilities.workspace && !!capabilities.workspace.configuration
+    );
+    this.hasWorkspaceFolderCapability = !!!!capabilities.workspace?.workspaceFolders;
+    this.hasDiagnosticRelatedInformationCapability =
+      !!capabilities.textDocument?.publishDiagnostics?.relatedInformation;
 
-  //   // Revalidate all open text documents
-  //   documents.all().forEach(validateTextDocument);
-  // });
-
-  private onDidChangedWatchedFiles(_change: any) {
-    // Monitored files have change in VSCode
-    connection.console.log('We received an file change event');
+    const result: InitializeResult = {
+      capabilities: {
+        textDocumentSync: TextDocumentSyncKind.Incremental,
+        // Tell the client that this server supports code completion.
+        completionProvider: {
+          resolveProvider: true,
+        },
+      },
+    };
+    if (this.hasWorkspaceFolderCapability) {
+      result.capabilities.workspace = {
+        workspaceFolders: {
+          supported: true,
+        },
+      };
+    }
+    return result;
   }
 
-  // This handler provides the initial list of the completion items.
-  // connection.onCompletion((_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
-  //   // The pass parameter contains the position of the text document in
-  //   // which code complete got requested. For the example we ignore this
-  //   // info and always provide the same completion items.
-  //   const keywords: CompletionItem[] = keywordSymbols.map((keyword: string, i: number) => {
-  //     return { label: keyword, kind: CompletionItemKind.Keyword, data: i };
-  //   });
-  //   return keywords;
-  // });
+  public onInitialized() {
+    if (this.hasConfigurationCapability) {
+      // Register for all configuration changes.
+      this.connection.client.register(DidChangeConfigurationNotification.type, undefined);
+    }
+    if (this.hasWorkspaceFolderCapability) {
+      this.connection.workspace.onDidChangeWorkspaceFolders((_event) => {
+        this.connection.console.log('Workspace folder change event received.');
+      });
+    }
+  }
 
-  // This handler resolves additional information for the item selected in
-  // the completion list.
-  // connection.onCompletionResolve((item: CompletionItem): CompletionItem => {
-  //   if (item.data === 1) {
-  //     item.detail = 'TypeScript details';
-  //     item.documentation = 'TypeScript documentation';
-  //   } else if (item.data === 2) {
-  //     item.detail = 'JavaScript details';
-  //     item.documentation = 'JavaScript documentation';
-  //   }
-  //   return item;
-  // });
+  public onDidClose(e: TextDocumentChangeEvent<TextDocument>) {
+    this.settingsManger.clear(e);
+  }
 
-  // Make the text document manager listen on the connection
-  // for open, change and close text document events
+  public completion = CompletionItemProvider.onCompletion;
+  public completionResolve = CompletionItemProvider.onCompletionResolve;
 }

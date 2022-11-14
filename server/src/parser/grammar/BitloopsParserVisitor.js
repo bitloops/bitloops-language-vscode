@@ -132,6 +132,12 @@ export default class BitloopsParserVisitor extends antlr4.tree.ParseTreeVisitor 
 	}
 
 
+	// Visit a parse tree produced by BitloopsParser#CreateExpression.
+	visitCreateExpression(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
 	// Visit a parse tree produced by BitloopsParser#DeleteKeyword.
 	visitDeleteKeyword(ctx) {
 	  return this.visitChildren(ctx);

@@ -1,18 +1,25 @@
 import { Diagnostic, DiagnosticSeverity, Range, TextDocument } from 'vscode-languageserver/node.js';
 
+export enum LogLevel {
+  Error = 1,
+  Warn = 2,
+  Info = 3,
+  Log = 4,
+}
+
 export class DiagnosticFactory {
   public static create(
-    severity: 1 | 2 | 3 | 4,
+    severity: LogLevel,
     range: Range,
     message: string,
-    addRelatedInformation?: string[]
+    addRelatedInformation?: string[],
   ): Diagnostic {
     message = this.prefixMessage(message, severity);
     const diagnostic: Diagnostic = {
-      severity: severity,
-      range: range,
-      message: message,
-      source: 'ex',
+      severity,
+      range,
+      message,
+      source: 'bl',
     };
     if (addRelatedInformation) {
       diagnostic.relatedInformation = [];
@@ -29,7 +36,7 @@ export class DiagnosticFactory {
     }
     return diagnostic;
   }
-  public static prefixMessage(message: string, severity: 1 | 2 | 3 | 4) {
+  public static prefixMessage(message: string, severity: LogLevel) {
     switch (severity) {
       case 1:
         return `Error: ${message}`;

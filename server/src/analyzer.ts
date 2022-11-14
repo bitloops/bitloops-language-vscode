@@ -6,6 +6,9 @@ import { components } from './types/keywords.js';
 import { getMatchRange } from './utils/regex.js';
 
 export interface IAnalyzer {
+  /**
+   * It analyzes the document and returns a list of diagnostics.
+   */
   analyze(document: TextDocument): Diagnostic[];
 }
 
@@ -29,7 +32,11 @@ export class RegexAnalyzer implements IAnalyzer {
     const pattern = new RegExp(`(${componentUnion})(?!\\s*\\w)`);
     const match = pattern.exec(document.getText());
     if (match) {
-      const useCaseSyntacError = DiagnosticFactory.create(1, getMatchRange(document, match), EErrors.NoIdentifier);
+      const useCaseSyntacError = DiagnosticFactory.create(
+        1,
+        getMatchRange(document, match),
+        EErrors.NoIdentifier,
+      );
       // console.log(useCaseSyntacError);
       return [useCaseSyntacError];
     }
