@@ -1,53 +1,103 @@
 {
-	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-	"name": "Bitloops",
-	"patterns": [
-		{
-			"include": "#keywords"
-		},
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Bitloops",
+  "patterns": [
     {
-			"include": "#numeric"
-		},
-		{
-			"include": "#strings"
-		},
+      "include": "#numeric"
+    },
     {
-			"include": "#comments"
-		},
+      "include": "#strings"
+    },
     {
-			"include": "#bitloopsClasses"
-		},
+      "include": "#storage"
+    },
     {
-			"include": "#myClasses"
-		}
-	],
-	"repository": {
-		"keywords": {
-			"patterns": [{
-				"name": "keyword.control.bitloops",
-				"match": "\\b(const|let|continue|break|return|concretes|implements|extends)\\b"
-			}]
-		},
+      "include": "#variables"
+    },
+    {
+      "include": "#bitloopsClasses"
+    },
+    {
+      "include": "#myClasses"
+    },
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#keywords"
+    }
+  ],
+  "repository": {
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.bitloops",
+          "match": "\\b(const|let|continue|break|return|concretes|implements|extends|if|isBrokenIf)\\b"
+        },
+        {
+          "name": "keyword.operator.comparison.bitloops",
+          "match": "==|!="
+        },
+        {
+          "name": "keyword.operator.relational.bitloops",
+          "match": "<=|>=|<|>"
+        },
+        {
+          "name": "keyword.operator.logical.bitloops",
+          "match": "NOT|OR|AND"
+        },
+        {
+          "name": "keyword.operator.arithmetic.bitloops",
+          "match": "%|\\*|/|-|\\+"
+        }
+      ]
+    },
     "numeric": {
-      "patterns": [{
-        "name": "constant.numeric.bitloops",
-        "match": "\\b(0x[0-9a-fA-F]+|0b[01]+|\\d+)\\b"
-      }]
+      "patterns": [
+        {
+          "name": "constant.numeric.bitloops",
+          "match": "\\b(0x[0-9a-fA-F]+|0b[01]+|\\d+)\\b"
+        }
+      ]
     },
     "bitloopsClasses": {
-			"patterns": [{
-				"name": "keyword.control.templateClass.bitloops",
-				"match": "\\b(Config|(REST\\.Methods)|REST|DTO|UseCase|Aggregate|Entity|OK|Errors|ValueObject|Props|RESTController|RESTRouter|GraphQLController|Feature|Mapper|RepoPort|RepoAdapter|PackagePort|PackageAdapter|ApplicationErrors|DomainErrors|DomainError|ApplicationError)\\b"
-			}]
-		},
+      "patterns": [
+        {
+          "name": "keyword.control.templateClass.bitloops",
+          "match": "\\b(Config|(REST\\.Methods)|REST|DTO|UseCase|Root|Entity|Rule|OK|Errors|ValueObject|Props|RESTController|RESTRouter|GraphQLController|Feature|Mapper|RepoPort|RepoAdapter|PackagePort|PackageAdapter|ApplicationErrors|DomainErrors|DomainError|ApplicationError)\\b"
+        }
+      ]
+    },
     "myClasses": {
-			"patterns": [{
-				"name": "entity.name.class.bitloops",
-				"match": "\\b[A-Z]+[a-zA-Z0-9]*(DTO|UseCase|Aggregate|VO|Entity|Error|Controller|Router|Feature|Mapper|RepoPort|RepoAdapter|PackagePort|PackageAdapter|Error)\\b"
-			}]
-		},
-		"strings": {
-			"patterns": [
+      "patterns": [
+        {
+          "name": "entity.name.class.bitloops",
+          "match": "\\b[A-Z]+[a-zA-Z0-9]*(DTO|UseCase|Aggregate|VO|Entity|Error|Controller|Router|Feature|Mapper|RepoPort|RepoAdapter|PackagePort|PackageAdapter|Error)\\b"
+        }
+      ]
+    },
+    "storage": {
+      "patterns": [
+        {
+          "name": "storage.type.bitloops",
+          "match": "\\b(double|float|int32|int64|uint32|uint64|sint32|sint64|fixed32|fixed64|sfixed32|sfixed64|bool|string|bytes|timestamp)\\b"
+        },
+        {
+          "name": "storage.modifier.bitloops",
+          "match": "\\b(optional|required|public|private)\\b"
+        }
+      ]
+    },
+    "variables": {
+      "patterns": [
+        {
+          "name": "variable.language.bitloops",
+          "match": "\\b(this)\\b"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
         {
           "name": "string.quoted.double.bitloops",
           "begin": "\"",
@@ -64,12 +114,12 @@
           "end": "`"
         }
       ]
-		},
+    },
     "comments": {
       "patterns": [
         {
           "name": "comment.line.double-slash.bitloops",
-          "match": "//.*$"
+          "match": "\\/\\/.*?$"
         },
         {
           "name": "comment.block.bitloops",
@@ -78,6 +128,6 @@
         }
       ]
     }
-	},
-	"scopeName": "source.bitloops"
+  },
+  "scopeName": "source.bitloops"
 }

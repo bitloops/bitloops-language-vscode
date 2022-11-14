@@ -36,7 +36,10 @@ export class LspConnection {
 
   // Listen on the connection
   public listen() {
+    // Make the text document manager listen on the connection
+    // for open, change and close text document events
     this.documents.listen(this.connection);
+    // Listen on the connection
     this.connection.listen();
   }
 }

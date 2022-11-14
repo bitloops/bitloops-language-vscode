@@ -5,12 +5,11 @@ import {
 } from 'vscode-languageserver/node.js';
 import { documentation } from './information/documentation.js';
 import { details } from './information/details.js';
-import { components } from './types/keywords.js';
+import { allKeywords, components, keywords } from './types/keywords.js';
 
 export class CompletionItemProvider {
   public static onCompletion(_textDocumentPosition: TextDocumentPositionParams) {
-    const keywordsList = Object.keys(components);
-    return keywordsList.map((symbol) => ({
+    return allKeywords.map((symbol) => ({
       label: symbol,
       kind: CompletionItemKind.Keyword,
       data: 1,
