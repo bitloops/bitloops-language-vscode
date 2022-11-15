@@ -10,8 +10,8 @@
   "type": "module",
   "scripts": {
     "generate-core-dts": "rimraf src/parser/grammar/Bitloops*.ts && node --experimental-vm-modules node_modules/typescript/bin/tsc src/parser/grammar/Bitloops*js --declaration --emitDeclarationOnly --allowJs --outDir src/parser/grammar && node_modules/prettier/bin-prettier.js --config .prettierrc --write src/parser/grammar/*.d.ts",
-    "ant": "yarn antlr4 -listener -visitor -Dlanguage=JavaScript src/parser/grammar/BitloopsLexer.g4 && yarn antlr4 -listener -visitor -Dlanguage=JavaScript src/parser/grammar/BitloopsParser.g4 && yarn generate-core-dts",
-    "antlr4": "java -jar /usr/local/lib/antlr-4.10.1-complete.jar"
+    "ant": "yarn antlr4-cmd -listener -visitor -Dlanguage=JavaScript src/parser/grammar/BitloopsLexer.g4 && yarn antlr4-cmd -listener -visitor -Dlanguage=JavaScript src/parser/grammar/BitloopsParser.g4 && yarn generate-core-dts",
+    "antlr4-cmd": "java -jar /usr/local/lib/antlr-4.10.1-complete.jar"
   },
   "dependencies": {
     "antlr4": "^4.11.0",
