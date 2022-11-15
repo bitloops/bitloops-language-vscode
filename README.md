@@ -33,6 +33,10 @@ No known issues.
 
 ## Release Notes
 
+### 0.1.0
+
+Added LSP server
+
 ### 0.0.9
 
 Fixed issue #5 causing comments not to display properly
