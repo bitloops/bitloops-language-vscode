@@ -13,7 +13,7 @@ export class BitloopsAnalyzer implements IAnalyzer {
   static diagnostics: Diagnostic[] = [];
   analyze(document: TextDocument): Diagnostic[] {
     try {
-      const transpileInputData = this.toParserInputData(document);
+      const transpileInputData = this.documentToParserInputData(document);
       const intermediateModel = transpiler.bitloopsCodeToIntermediateModel(transpileInputData);
       if (isParserErrors(intermediateModel)) {
         const diagnostics = this.mapParserErrorsToLSPDiagnostics(intermediateModel, document);
@@ -26,7 +26,7 @@ export class BitloopsAnalyzer implements IAnalyzer {
     }
   }
 
-  private toParserInputData(document: TextDocument): TParserInputData {
+  private documentToParserInputData(document: TextDocument): TParserInputData {
     const res: Partial<TParserInputData> = {};
 
     if (document.uri.endsWith('setup.bl')) {
@@ -63,7 +63,7 @@ export class BitloopsAnalyzer implements IAnalyzer {
           start: document.positionAt(e.start),
           end: document.positionAt(e.stop),
         },
-        `line: ${e.line}:${e.column}, offendingSymbol : ${e.offendingToken.text}, msg: ${e.message}`,
+        `line: ${e.line}:${e.column}, offendingSymbol: ${e.offendingToken.text}, msg: ${e.message}`,
       ),
     );
   }
