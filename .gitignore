@@ -106,12 +106,3 @@ dist
 .tern-port
 bitloops-language-*.vsix
 */.DS_Store
-
-src/parser/grammar/BitloopsLexer.d.ts
-src/parser/grammar/BitloopsLexer.js
-src/parser/grammar/BitloopsParser.d.ts
-src/parser/grammar/BitloopsParser.js
-src/parser/grammar/BitloopsParserListener.d.ts
-src/parser/grammar/BitloopsParserListener.js
-src/parser/grammar/BitloopsParserVisitor.d.ts
-src/parser/grammar/BitloopsParserVisitor.js
