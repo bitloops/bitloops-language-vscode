@@ -2,10 +2,14 @@
 # yarn lockfile v1
 
 
-"@types/antlr4@^4.11.0":
-  version "4.11.0"
-  resolved "https://registry.yarnpkg.com/@types/antlr4/-/antlr4-4.11.0.tgz#067c661362d5fc8476f2966021f5a7b44db565dd"
-  integrity sha512-ZN/RIYHqXcySR4Odrl+n0g+/YJM9Z+asEdOHxRETiAezivZA+3kdNlCZAtehmydNFhECAh9PqAxkkGfWLKMYSw==
+"@bitloops/bl-transpiler@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@bitloops/bl-transpiler/-/bl-transpiler-0.1.0.tgz#babf5f8ab4c02b23c75c1dca53ebb94d02f33d57"
+  integrity sha512-HMsU+6ggV/+sRQRbDbzpgZhm7fE06YORfW207ayJYlotVuGhvefyWRqtWjE2da5W37Ora+a+kQwdGW9ArP05ow==
+  dependencies:
+    antlr4 "^4.11.0"
+    lodash "^4.17.21"
+    prettier "^2.7.1"
 
 antlr4@^4.11.0:
   version "4.11.0"
@@ -59,6 +63,11 @@ inherits@2:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.4.tgz#0fa2c64f932917c3433a0ded55363aae37416b7c"
   integrity sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==
+
+lodash@^4.17.21:
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
+  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
 minimatch@^3.1.1:
   version "3.1.2"

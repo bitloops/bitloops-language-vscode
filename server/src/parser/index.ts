@@ -1,51 +1,70 @@
-import antlr from 'antlr4';
+import {
+  OriginalParserError,
+  TParserInputData,
+  isParserErrors,
+  transpiler,
+} from '@bitloops/bl-transpiler';
 import { Diagnostic } from 'vscode-languageserver/node.js';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { IAnalyzer } from '../analyzer.js';
-import BitloopsLexer from './grammar/BitloopsLexer.js';
-import BitloopsParser from './grammar/BitloopsParser.js';
-import { VerboseListener } from './errorListener.js';
+import { DiagnosticFactory } from '../diagnostic.js';
 
-export class ANTLR4Analyzer implements IAnalyzer {
+export class BitloopsAnalyzer implements IAnalyzer {
   static diagnostics: Diagnostic[] = [];
   analyze(document: TextDocument): Diagnostic[] {
     try {
-      console.log('uri', document.uri);
-      if (document.uri.endsWith('setup.bl')) {
-        // TODO handle setup grammar
-        return [];
+      const transpileInputData = this.documentToParserInputData(document);
+      const intermediateModel = transpiler.bitloopsCodeToIntermediateModel(transpileInputData);
+      if (isParserErrors(intermediateModel)) {
+        const diagnostics = this.mapParserErrorsToLSPDiagnostics(intermediateModel, document);
+        return diagnostics;
       }
-      ANTLR4Analyzer.diagnostics = [];
-      const textFile = document.getText();
-      const chars = new (antlr as any).InputStream(textFile);
-      const lexer = new BitloopsLexer(chars) as any;
-      const tokens = new (antlr as any).CommonTokenStream(lexer);
-      const parser = new BitloopsParser(tokens) as any;
-
-      parser.removeErrorListeners();
-      parser.addErrorListener(new VerboseListener());
-      const _ = parser.program();
-      ANTLR4Analyzer.diagnostics = this.transformDiagnosticsIndexesToDocumentPositions(
-        ANTLR4Analyzer.diagnostics,
-        document,
-      );
-      return ANTLR4Analyzer.diagnostics;
+      return [];
     } catch (e) {
       console.log('error', e);
       return [];
     }
   }
 
-  transformDiagnosticsIndexesToDocumentPositions(
-    diagnostics: Diagnostic[],
-    document: TextDocument,
-  ) {
-    return diagnostics.map((d) => ({
-      ...d,
-      range: {
-        start: document.positionAt(d.range.start as any),
-        end: document.positionAt(d.range.end as any),
+  private documentToParserInputData(document: TextDocument): TParserInputData {
+    const res: Partial<TParserInputData> = {};
+
+    if (document.uri.endsWith('setup.bl')) {
+      res.setup = [
+        {
+          fileId: document.uri.split('/').slice(-1)[0],
+          fileContents: document.getText(),
+        },
+      ];
+      return res as TParserInputData;
+    }
+    // Handle possibly unknown bounded context and module
+    const boundedContext = document.uri.split('/')?.slice(-3)?.[0] ?? 'unknown';
+    const module = document.uri.split('/')?.slice(-2)?.[0] ?? 'unknown';
+    res.core = [
+      {
+        boundedContext,
+        module,
+        fileId: document.uri.split('/').slice(-1)[0],
+        fileContents: document.getText(),
       },
-    }));
+    ];
+    return res as TParserInputData;
+  }
+
+  mapParserErrorsToLSPDiagnostics(
+    parserErrors: OriginalParserError,
+    document: TextDocument,
+  ): Diagnostic[] {
+    return parserErrors.map((e) =>
+      DiagnosticFactory.create(
+        1,
+        {
+          start: document.positionAt(e.start),
+          end: document.positionAt(e.stop),
+        },
+        `line: ${e.line}:${e.column}, offendingSymbol: ${e.offendingToken.text}, msg: ${e.message}`,
+      ),
+    );
   }
 }

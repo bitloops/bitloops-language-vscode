@@ -13,7 +13,7 @@ import { CompletionItemProvider } from './completion.js';
 import { WorkspaceSettingsManager } from './settings.js';
 import { IAnalyzer } from './analyzer.js';
 import { ILspClient } from './lsp-client.js';
-import { ANTLR4Analyzer } from './parser/index.js';
+import { BitloopsAnalyzer } from './parser/index.js';
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
 
@@ -37,7 +37,7 @@ export class BitloopsServer {
     this.connection = connection;
     this.lspClient = lspClient;
     this.settingsManger = new WorkspaceSettingsManager();
-    this.analyzer = new ANTLR4Analyzer();
+    this.analyzer = new BitloopsAnalyzer();
   }
 
   public async onDidChangeContent(change: TextDocumentChangeEvent<TextDocument>): Promise<void> {

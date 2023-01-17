@@ -4,6 +4,10 @@ All notable changes to the "bitloops-language" extension will be documented in t
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+### 0.1.1
+
+Added transpiler package dependency
+
 ### 0.1.0
 
 Added LSP server

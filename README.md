@@ -16,7 +16,7 @@ The Bitloops Language extension adds any VS Code settings through the `contribut
 
 This extension contributes the following settings:
 
-* `bitloops.enable`: Enable/disable this extension.
+- `bitloops.enable`: Enable/disable this extension.
 
 ## Running the application
 
@@ -32,6 +32,10 @@ This extension contributes the following settings:
 No known issues.
 
 ## Release Notes
+
+### 0.1.1
+
+Added transpiler package dependency
 
 ### 0.1.0
 

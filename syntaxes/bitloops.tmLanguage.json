@@ -64,7 +64,7 @@
       "patterns": [
         {
           "name": "keyword.control.templateClass.bitloops",
-          "match": "\\b(Config|(REST\\.Methods)|REST|DTO|UseCase|Root|Entity|Rule|OK|Errors|ValueObject|Props|RESTController|RESTRouter|GraphQLController|Feature|Mapper|RepoPort|RepoAdapter|PackagePort|PackageAdapter|ApplicationErrors|DomainErrors|DomainError|ApplicationError)\\b"
+          "match": "\\b(Config|(REST\\.Methods)|REST|DTO|UseCase|Root|Entity|Rule|OK|Errors|ValueObject|Props|ReadModel|RESTController|RESTRouter|GraphQLController|Feature|Mapper|RepoPort|RepoAdapter|PackagePort|PackageAdapter|ApplicationErrors|DomainErrors|DomainError|ApplicationError)\\b"
         }
       ]
     },
