@@ -2,7 +2,10 @@ import {
   OriginalParserError,
   TParserInputData,
   isParserErrors,
+  isIntermediateASTValidationErrors,
+  IntermediateAST,
   transpiler,
+  OriginalValidatorError,
 } from '@bitloops/bl-transpiler';
 import { Diagnostic } from 'vscode-languageserver/node.js';
 import { TextDocument } from 'vscode-languageserver-textdocument';
@@ -19,6 +22,16 @@ export class BitloopsAnalyzer implements IAnalyzer {
         const diagnostics = this.mapParserErrorsToLSPDiagnostics(intermediateModel, document);
         return diagnostics;
       }
+      const validatedIntermediateModel = transpiler.validateIntermediateModel(
+        intermediateModel as IntermediateAST,
+      );
+      if (isIntermediateASTValidationErrors(validatedIntermediateModel)) {
+        const diagnostics = this.mapValidatorErrorsToLSPDiagnostics(
+          validatedIntermediateModel,
+          document,
+        );
+        return diagnostics;
+      }
       return [];
     } catch (e) {
       console.log('error', e);
@@ -26,29 +39,51 @@ export class BitloopsAnalyzer implements IAnalyzer {
     }
   }
 
+  // private documentToParserInputData(document: TextDocument): TParserInputData {
+  //   const res: Partial<TParserInputData> = {};
+  //   const setup = [];
+  //   const core = [];
+
+  //   if (document.uri.endsWith('setup.bl'))
+  //     setup.push({
+  //       fileId: document.uri.split('/').slice(-1)[0],
+  //       fileContents: document.getText(),
+  //     });
+  //   // Handle possibly unknown bounded context and module
+  //   const boundedContext = document.uri.split('/')?.slice(-3)?.[0] ?? 'unknown';
+  //   const module = document.uri.split('/')?.slice(-2)?.[0] ?? 'unknown';
+  //   core.push({
+  //     boundedContext,
+  //     module,
+  //     fileId: document.uri.split('/').slice(-1)[0],
+  //     fileContents: document.getText(),
+  //   });
+  //   res.setup = setup;
+  //   res.core = core;
+  //   return res as TParserInputData;
+  // }
+
   private documentToParserInputData(document: TextDocument): TParserInputData {
     const res: Partial<TParserInputData> = {};
+    const setup = [];
+    const core = [];
 
-    if (document.uri.endsWith('setup.bl')) {
-      res.setup = [
-        {
-          fileId: document.uri.split('/').slice(-1)[0],
-          fileContents: document.getText(),
-        },
-      ];
-      return res as TParserInputData;
-    }
+    if (document.uri.endsWith('setup.bl'))
+      setup.push({
+        fileId: document.uri.split('/').slice(-1)[0],
+        fileContents: document.getText(),
+      });
     // Handle possibly unknown bounded context and module
     const boundedContext = document.uri.split('/')?.slice(-3)?.[0] ?? 'unknown';
     const module = document.uri.split('/')?.slice(-2)?.[0] ?? 'unknown';
-    res.core = [
-      {
-        boundedContext,
-        module,
-        fileId: document.uri.split('/').slice(-1)[0],
-        fileContents: document.getText(),
-      },
-    ];
+    core.push({
+      boundedContext,
+      module,
+      fileId: document.uri.split('/').slice(-1)[0],
+      fileContents: document.getText(),
+    });
+    res.setup = setup;
+    res.core = core;
     return res as TParserInputData;
   }
 
@@ -64,6 +99,28 @@ export class BitloopsAnalyzer implements IAnalyzer {
           end: document.positionAt(e.stop),
         },
         `line: ${e.line}:${e.column}, offendingSymbol: ${e.offendingToken.text}, msg: ${e.message}`,
+      ),
+    );
+  }
+
+  mapValidatorErrorsToLSPDiagnostics(
+    validatorErrors: OriginalValidatorError,
+    document: TextDocument,
+  ): Diagnostic[] {
+    return validatorErrors.map((e) =>
+      DiagnosticFactory.create(
+        1,
+        {
+          start: {
+            line: e.metadata.start.line - 1,
+            character: e.metadata.start.column - 1,
+          },
+          end: {
+            line: e.metadata.end.line - 1,
+            character: e.metadata.end.column - 1,
+          },
+        },
+        `line: ${e.metadata.start.line}:${e.metadata.start.column} , msg: ${e.message}`,
       ),
     );
   }
