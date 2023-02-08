@@ -12,6 +12,7 @@ export class DiagnosticFactory {
     severity: LogLevel,
     range: Range,
     message: string,
+    uri?: string,
     addRelatedInformation?: string[],
   ): Diagnostic {
     message = this.prefixMessage(message, severity);
@@ -27,7 +28,7 @@ export class DiagnosticFactory {
         diagnostic.relatedInformation.push({
           location: {
             // TODO? add TextDocument uri?
-            uri: '',
+            uri: uri,
             range: range,
           },
           message: related,

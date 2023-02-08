@@ -9,17 +9,20 @@ export interface IAnalyzer {
   /**
    * It analyzes the document and returns a list of diagnostics.
    */
-  analyze(document: TextDocument): Diagnostic[];
+  analyze(document: TextDocument): Record<string, Diagnostic[]>;
 }
 
 let problems = 0;
 
 export class RegexAnalyzer implements IAnalyzer {
-  public analyze(textDocument: TextDocument): Diagnostic[] {
-    let diagnostics: Diagnostic[] = [];
-    diagnostics = diagnostics.concat(this.validateComponents(textDocument));
+  public analyze(textDocument: TextDocument): Record<string, Diagnostic[]> {
+    let diagnostics: Record<string, Diagnostic[]> = {};
+    diagnostics[textDocument.uri] = [];
+    diagnostics[textDocument.uri] = diagnostics[textDocument.uri].concat(
+      this.validateComponents(textDocument),
+    );
     // connection.console.log(`[validate] ${textDocument.uri} has ${diagnostics.length} for ${text}`);
-    problems = diagnostics.length;
+    problems = diagnostics[textDocument.uri].length;
     return diagnostics;
   }
 
