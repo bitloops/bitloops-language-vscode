@@ -87,6 +87,11 @@ export type TParserCoreInputData = {
   fileContents: TFileContents;
 }[];
 
+export type TParserSetupInputData = {
+  fileId: TFileId;
+  fileContents: TFileContents;
+}[];
+
 export type TASTCoreInputData = {
   boundedContext: string;
   classes: Record<TClassType, Record<TClassName, TClassInformation>>;
@@ -126,7 +131,14 @@ export type TBitloopsTargetGeneratorParams = {
   sourceDirPath?: string; // TODO remove this after making the package files injectable in the setup
 };
 
-export type TBitloopsClasses = TProps | TValueObjects | TRESTController | TUseCase | TDomainErrors | TDTO | TStructs;
+export type TBitloopsClasses =
+  | TProps
+  | TValueObjects
+  | TRESTController
+  | TUseCase
+  | TDomainErrors
+  | TDTO
+  | TStructs;
 
 export type TModuleName = string;
 export type TBoundedContext = Record<TModuleName, TModule>;
@@ -932,7 +944,11 @@ export type TIdentifierExpression = {
 };
 
 export type TLogicalSingleExpression = {
-  logicalExpression: TNotSingleExpression | TAndSingleExpression | TOrSingleExpression | TXorSingleExpression;
+  logicalExpression:
+    | TNotSingleExpression
+    | TAndSingleExpression
+    | TOrSingleExpression
+    | TXorSingleExpression;
 };
 
 export type TNotSingleExpression = {

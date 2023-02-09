@@ -9,7 +9,7 @@
 
 ## Get up and running straight away
 
-- `npm install`
+- `yarn`
 - `npm run compile`
 - Make sure the language configuration settings in `language-configuration.json` are accurate.
 - Press `F5` to open a new window with your extension loaded.

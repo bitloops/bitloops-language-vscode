@@ -6,6 +6,7 @@ import {
   InitializeResult,
   TextDocumentSyncKind,
   DidChangeConfigurationNotification,
+  Diagnostic,
 } from 'vscode-languageserver/node.js';
 
 import { TextDocument } from 'vscode-languageserver-textdocument';
@@ -41,16 +42,12 @@ export class BitloopsServer {
   }
 
   public async onDidChangeContent(change: TextDocumentChangeEvent<TextDocument>): Promise<void> {
-    const settings = await this.settingsManger.getDocumentSettings(
-      change.document.uri,
-      this.hasConfigurationCapability,
-      this.connection,
-    );
-    // We could use retrieved settings here to change the way we parse the document
-
-    const diagnostics = this.analyzer.analyze(change.document);
-    this.lspClient.publishDiagnostics({ uri: change.document.uri, diagnostics });
+    this.createDiagnostics(change.document);
   }
+
+  // public async onDidOpen(change: TextDocumentChangeEvent<TextDocument>): Promise<void> {
+  //   this.createDiagnostics(change.document);
+  // }
 
   public onInitialize(params: InitializeParams): InitializeResult {
     const capabilities = params.capabilities;
@@ -98,4 +95,18 @@ export class BitloopsServer {
 
   public completion = CompletionItemProvider.onCompletion;
   public completionResolve = CompletionItemProvider.onCompletionResolve;
+
+  private async createDiagnostics(document: TextDocument): Promise<void> {
+    const settings = await this.settingsManger.getDocumentSettings(
+      document.uri,
+      this.hasConfigurationCapability,
+      this.connection,
+    );
+    // We could use retrieved settings here to change the way we parse the document
+
+    const diagnostics = this.analyzer.analyze(document);
+    for (const [uri, diagnostic] of Object.entries(diagnostics)) {
+      this.lspClient.publishDiagnostics({ uri: uri, diagnostics: diagnostic });
+    }
+  }
 }
