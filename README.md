@@ -34,6 +34,7 @@ No known issues.
 ## What's New
 
 ### 0.2.0
+
 Added validator for semantic and syntactic errors
 
 ---
