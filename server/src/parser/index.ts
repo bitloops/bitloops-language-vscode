@@ -52,7 +52,7 @@ export class BitloopsAnalyzer implements IAnalyzer {
         },
       ];
     // Handle possibly unknown bounded context and module
-    else {
+    else if (document.uri.endsWith('.bl')) {
       const boundedContext = document.uri.split('/')?.slice(-3)?.[0] ?? 'unknown';
       const module = document.uri.split('/')?.slice(-2)?.[0] ?? 'unknown';
       this.core[document.uri] = [
