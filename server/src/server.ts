@@ -25,7 +25,7 @@ import { BitloopsAnalyzer } from './parser/index.js';
 export class BitloopsServer {
   private connection: _Connection;
   private settingsManger: WorkspaceSettingsManager;
-  private analyzer: BitloopsAnalyzer;
+  private analyzer: IAnalyzer;
   private lspClient: ILspClient;
 
   // Default Global Settings

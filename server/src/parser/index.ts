@@ -41,6 +41,7 @@ export class BitloopsAnalyzer implements IAnalyzer {
   }
 
   private documentToParserInputData(document: TextDocument): TParserInputData {
+    //giving file id as uri for now
     if (!(document.uri in this.diagnostics)) this.diagnostics[document.uri] = [];
     if (document.uri.endsWith('setup.bl'))
       this.setup[document.uri] = [
@@ -52,7 +53,6 @@ export class BitloopsAnalyzer implements IAnalyzer {
       ];
     // Handle possibly unknown bounded context and module
     else {
-      //better handle for bc and module - maybe workspace
       const boundedContext = document.uri.split('/')?.slice(-3)?.[0] ?? 'unknown';
       const module = document.uri.split('/')?.slice(-2)?.[0] ?? 'unknown';
       this.core[document.uri] = [
@@ -94,7 +94,7 @@ export class BitloopsAnalyzer implements IAnalyzer {
             end: document.positionAt(e.stop),
           },
           `line: ${e.line}:${e.column}, offendingSymbol: ${e.offendingToken.text}, msg: ${e.message}`,
-          document.uri,
+          e.fileId,
         ),
       ),
     );
