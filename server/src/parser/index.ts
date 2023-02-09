@@ -3,7 +3,6 @@ import {
   TParserInputData,
   isParserErrors,
   isIntermediateASTValidationErrors,
-  IntermediateAST,
   transpiler,
   OriginalValidatorError,
 } from '@bitloops/bl-transpiler';
@@ -26,11 +25,8 @@ export class BitloopsAnalyzer implements IAnalyzer {
         this.mapParserErrorsToLSPDiagnostics(intermediateModel, document);
         return this.diagnostics;
       }
-      const validatedIntermediateModel = transpiler.validateIntermediateModel(
-        intermediateModel as IntermediateAST,
-      );
-      if (isIntermediateASTValidationErrors(validatedIntermediateModel)) {
-        this.mapValidatorErrorsToLSPDiagnostics(validatedIntermediateModel, document);
+      if (isIntermediateASTValidationErrors(intermediateModel)) {
+        this.mapValidatorErrorsToLSPDiagnostics(intermediateModel, document);
         return this.diagnostics;
       }
       return this.diagnostics;
