@@ -12,6 +12,8 @@ export const components = {
   GraphQLController: 'GraphQLController',
   RESTController: 'RESTController',
   PackagePort: 'PackagePort',
+  Command: 'Command',
+  Query: 'Query',
 };
 
 export const keywords = [
