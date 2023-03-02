@@ -12,6 +12,8 @@ export const components = {
   GraphQLController: 'GraphQLController',
   RESTController: 'RESTController',
   PackagePort: 'PackagePort',
+  Command: 'Command',
+  Query: 'Query',
 };
 
 export const keywords = [
@@ -139,6 +141,9 @@ export const keywords = [
   'Operations',
   'Mutation',
   'Query',
+
+  'StandardVO',
 ];
 
+// 'StandardVO',
 export const allKeywords = Array.from(new Set([...Object.values(components), ...keywords]));
