@@ -40,7 +40,3 @@ Added validator for semantic and syntactic errors
 ---
 
 **Enjoy!**
-
-
-## License
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fbitloops%2Fbitloops-language-vscode.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fbitloops%2Fbitloops-language-vscode?ref=badge_large)
