@@ -12,7 +12,7 @@ import { allKeywords, components, keywords } from './types/keywords.js';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 
 //this would come from package
-const StandardVO = {
+const StandardVOCompletion = {
   prefixes: ['StandardVO', 'StandardVO.Currency'],
   completions: {
     StandardVO: ['Currency'],
@@ -29,11 +29,11 @@ export class CompletionItemProvider {
     let text = documents.get(_textDocumentPosition.textDocument.uri).getText();
     let position = _textDocumentPosition.position;
     const offset = document.offsetAt(position);
-    for (const prefix of StandardVO.prefixes) {
+    for (const prefix of StandardVOCompletion.prefixes) {
       const linePrefix = text.slice(offset - prefix.length - 1, offset);
       if (linePrefix.endsWith(prefix + '.')) {
         return [
-          ...StandardVO.completions[prefix].map((symbol) => ({
+          ...StandardVOCompletion.completions[prefix].map((symbol) => ({
             label: symbol,
             kind: CompletionItemKind.Keyword,
             data: 2,
