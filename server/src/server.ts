@@ -64,6 +64,7 @@ export class BitloopsServer {
         // Tell the client that this server supports code completion.
         completionProvider: {
           resolveProvider: true,
+          triggerCharacters: ['.'],
         },
       },
     };

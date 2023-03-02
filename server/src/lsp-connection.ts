@@ -29,7 +29,7 @@ export class LspConnection {
 
     this.documents.onDidClose(server.onDidClose.bind(server));
     this.documents.onDidChangeContent(server.onDidChangeContent.bind(server));
-    this.connection.onCompletion(server.completion.bind(server));
+    this.connection.onCompletion(server.completion.bind(server, this.documents));
     this.connection.onCompletionResolve(server.completionResolve.bind(server));
     return this;
   }

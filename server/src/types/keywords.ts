@@ -141,6 +141,9 @@ export const keywords = [
   'Operations',
   'Mutation',
   'Query',
+
+  'StandardVO',
 ];
 
+// 'StandardVO',
 export const allKeywords = Array.from(new Set([...Object.values(components), ...keywords]));
