@@ -1,6 +1,4 @@
 # bitloops-language README
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fbitloops%2Fbitloops-language-vscode.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fbitloops%2Fbitloops-language-vscode?ref=badge_shield)
-
 
 This is the README for the "bitloops-language" extension.
 
