@@ -38,7 +38,7 @@ export class CompletionItemProvider {
             label: symbol,
             kind: CompletionItemKind.Keyword,
             data: 2,
-            //we could check for snippets too
+            //we could add snippets too
           })),
         ];
       }
