@@ -13,10 +13,11 @@ import { TextDocument } from 'vscode-languageserver-textdocument';
 
 //this would come from package
 const StandardVOCompletion = {
-  prefixes: ['StandardVO', 'StandardVO.Currency'],
+  prefixes: ['StandardVO'],
+  // , 'StandardVO.Currency'],
   completions: {
     StandardVO: ['Currency'],
-    'StandardVO.Currency': ['Value', 'Errors'],
+    // 'StandardVO.Currency': ['Value', 'Errors'],
   },
 };
 
