@@ -16,7 +16,7 @@ const StandardVO = {
   prefixes: ['StandardVO', 'StandardVO.Currency'],
   completions: {
     StandardVO: ['Currency'],
-    'StandardVO.Currency': ['Value', 'Create'],
+    'StandardVO.Currency': ['Value', 'Errors'],
   },
 };
 
