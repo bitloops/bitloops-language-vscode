@@ -2,7 +2,7 @@
   "name": "bitloops-server-client",
   "description": "BitLoops Server Client",
   "license": "MIT",
-  "version": "0.0.1",
+  "version": "0.3.0",
   "publisher": "Bitloops",
   "engines": {
     "vscode": "^1.63.0"

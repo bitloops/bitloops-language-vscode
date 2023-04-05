@@ -26,7 +26,7 @@ export class BitloopsAnalyzer implements IAnalyzer {
         return this.diagnostics;
       }
       if (isIntermediateASTValidationErrors(intermediateModel)) {
-        this.mapValidatorErrorsToLSPDiagnostics(intermediateModel, document);
+        this.mapValidatorErrorsToLSPDiagnostics(intermediateModel);
         return this.diagnostics;
       }
       return this.diagnostics;
@@ -74,7 +74,10 @@ export class BitloopsAnalyzer implements IAnalyzer {
     }
     return this.res as TParserInputData;
   }
-  mapParserErrorsToLSPDiagnostics(parserErrors: OriginalParserError, document: TextDocument): void {
+  private mapParserErrorsToLSPDiagnostics(
+    parserErrors: OriginalParserError,
+    document: TextDocument,
+  ): void {
     parserErrors.forEach((e) => {
       this.diagnostics[e.fileId] = [];
     });
@@ -96,10 +99,7 @@ export class BitloopsAnalyzer implements IAnalyzer {
     );
   }
 
-  mapValidatorErrorsToLSPDiagnostics(
-    validatorErrors: OriginalValidatorError,
-    document: TextDocument,
-  ): void {
+  private mapValidatorErrorsToLSPDiagnostics(validatorErrors: OriginalValidatorError): void {
     validatorErrors.forEach((e) => {
       this.diagnostics[e.metadata.fileId] = [];
     });
