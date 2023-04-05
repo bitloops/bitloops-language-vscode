@@ -33,9 +33,9 @@ No known issues.
 
 ## What's New
 
-### 0.3.0
+### 0.3.1
 
-Added autocompletion for StandardVOs
+Added validation after the initialization of the workspace
 
 ---
 
