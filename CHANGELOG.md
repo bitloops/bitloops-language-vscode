@@ -4,6 +4,10 @@ All notable changes to the "bitloops-language" extension will be documented in t
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+### 0.3.2
+
+Added new keywords of the bitloops language
+
 ### 0.3.1
 
 Added validation after the initialization of the workspace
