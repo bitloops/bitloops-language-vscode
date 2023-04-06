@@ -33,9 +33,9 @@ No known issues.
 
 ## What's New
 
-### 0.3.1
+### 0.3.2
 
-Added validation after the initialization of the workspace
+Added new keywords of the Bitloops Language (DomainEvent, IntegrationEvent, DomainService)
 
 ---
 

@@ -6,7 +6,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### 0.3.2
 
-Added new keywords of the bitloops language
+Added new keywords of the Bitloops Language (DomainEvent, IntegrationEvent, DomainService)
 
 ### 0.3.1
 
