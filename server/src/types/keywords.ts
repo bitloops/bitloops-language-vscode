@@ -14,6 +14,9 @@ export const components = {
   PackagePort: 'PackagePort',
   Command: 'Command',
   Query: 'Query',
+  DomainEvent: 'DomainEvent',
+  IntegrationEvent: 'IntegrationEvent',
+  DomainService: 'DomainService',
 };
 
 export const keywords = [
@@ -141,6 +144,9 @@ export const keywords = [
   'Operations',
   'Mutation',
   'Query',
+  'DomainEvent',
+  'IntegrationEvent',
+  'DomainService',
 
   'StandardVO',
 ];

@@ -64,7 +64,7 @@
       "patterns": [
         {
           "name": "keyword.control.templateClass.bitloops",
-          "match": "\\b(Config|(REST\\.Methods)|REST|DTO|UseCase|Root|Entity|Rule|OK|Errors|ValueObject|Props|ReadModel|RESTController|RESTRouter|GraphQLController|Feature|Mapper|RepoPort|RepoAdapter|PackagePort|PackageAdapter|ApplicationErrors|DomainErrors|DomainError|ApplicationError|Command|Query|CommandHandler|QueryHandler)\\b"
+          "match": "\\b(Config|(REST\\.Methods)|REST|DTO|UseCase|Root|Entity|Rule|OK|Errors|ValueObject|Props|ReadModel|RESTController|RESTRouter|GraphQLController|Feature|Mapper|RepoPort|RepoAdapter|PackagePort|PackageAdapter|ApplicationErrors|DomainErrors|DomainError|ApplicationError|Command|Query|CommandHandler|QueryHandler|Struct|IntegrationEvent|IntegrationEventHandler|DomainEvent|DomainEventHandler|ServicePort|DomainService)\\b"
         }
       ]
     },
@@ -72,7 +72,7 @@
       "patterns": [
         {
           "name": "entity.name.class.bitloops",
-          "match": "\\b[A-Z]+[a-zA-Z0-9]*(DTO|UseCase|Aggregate|VO|Entity|Error|Controller|Router|Feature|Mapper|RepoPort|RepoAdapter|PackagePort|PackageAdapter|Error|Props|Rule|Command|Query|ReadModel|CommandHandler|QueryHandler)\\b"
+          "match": "\\b[A-Z]+[a-zA-Z0-9]*(DTO|UseCase|Aggregate|VO|Entity|Error|Controller|Router|Feature|Mapper|RepoPort|RepoAdapter|PackagePort|PackageAdapter|Error|Props|Rule|Command|Query|ReadModel|CommandHandler|QueryHandler|IntegrationEvent|IntegrationEventHandler|DomainEvent|DomainEventHandler|ServicePort|DomainService)\\b"
         }
       ]
     },
