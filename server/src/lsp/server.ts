@@ -12,13 +12,14 @@ import {
 } from 'vscode-languageserver/node.js';
 
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { CompletionItemProvider } from './completion.js';
-import { WorkspaceSettingsManager } from './settings.js';
-import { IAnalyzer } from './analyzer.js';
-import { ILspClient } from './lsp-client.js';
-import { BitloopsAnalyzer } from './parser/index.js';
+import { CompletionItemProvider } from './handlers/completion-handler/completion.js';
+import { WorkspaceSettingsManager } from '../utils/settings.js';
+import { IAnalyzer } from './handlers/document-text-changed-handler/analyzer.js';
+import { ILspClient } from './client.js';
+import { BitloopsAnalyzer } from './handlers/document-text-changed-handler/bitloops-transpiler-analyzer.js';
 import * as fs from 'fs';
 import * as path from 'path';
+import { FileUtils } from '../utils/file.js';
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -48,6 +49,7 @@ export class BitloopsServer {
   }
 
   public async onDidChangeContent(change: TextDocumentChangeEvent<TextDocument>): Promise<void> {
+    console.log('onDidChangeContent::', change.document.uri);
     this.createDiagnostics(change.document);
   }
 
@@ -56,7 +58,8 @@ export class BitloopsServer {
   // }
 
   public onInitialize(params: InitializeParams): InitializeResult {
-    this.workspaceFolders = params.workspaceFolders;
+    this.workspaceFolders = params.workspaceFolders ?? [];
+    console.log('workspaceFolders::', this.workspaceFolders);
 
     const capabilities = params.capabilities;
     this.hasConfigurationCapability = !!(
@@ -101,7 +104,10 @@ export class BitloopsServer {
   }
 
   public onDidClose(e: TextDocumentChangeEvent<TextDocument>) {
+    console.log('onDidClose::', e.document.uri);
     this.settingsManger.clear(e);
+    // const uri = e.document.uri;
+    // this.analyzer.removeFile(uri);
   }
 
   public completion = CompletionItemProvider.onCompletion;
@@ -124,24 +130,47 @@ export class BitloopsServer {
   private async validateWorkspace(workspaceFolders: WorkspaceFolder[]) {
     for (const workspaceFolder of workspaceFolders) {
       const workspaceRoot = path.resolve(workspaceFolder.uri.replace('file://', ''));
-      const files = fs.readdirSync(workspaceRoot);
+      // For now we only handle 1 setup.bl file, consequently only 1 bl project
+      // Perhaps we would isolate each project, having its own analyzer
+
+      const setupFilePath = this.findSetupFilePath(workspaceRoot);
+      if (setupFilePath === null) {
+        throw new Error('No setup.bl file found');
+      }
+      console.log('setupFilePath::', setupFilePath);
+      this.analyzer.setSetupFile(setupFilePath);
       await this.validateBitloopsFiles(workspaceRoot);
     }
   }
-
-  private async validateBitloopsFiles(startPath) {
-    var files = fs.readdirSync(startPath);
-    for (var i = 0; i < files.length; i++) {
-      var filename = path.join(startPath, files[i]);
-      var stat = fs.lstatSync(filename);
+  private findSetupFilePath(workspaceRoot: string): string | null {
+    const files = fs.readdirSync(workspaceRoot);
+    let foundSetupFilePath = null;
+    for (const file of files) {
+      const fileUri = path.join(workspaceRoot, file);
+      const stat = fs.lstatSync(fileUri);
       if (stat.isDirectory()) {
-        this.validateBitloopsFiles(filename);
-      } else if (filename.endsWith('.bl')) {
+        foundSetupFilePath ||= this.findSetupFilePath(fileUri);
+      } else if (fileUri.endsWith('setup.bl')) {
+        return FileUtils.pathToDocumentUri(fileUri);
+      }
+    }
+    return foundSetupFilePath;
+  }
+
+  private async validateBitloopsFiles(startPath: string): Promise<void> {
+    const files = fs.readdirSync(startPath);
+    for (var i = 0; i < files.length; i++) {
+      const fileUri = path.join(startPath, files[i]);
+      const stat = fs.lstatSync(fileUri);
+      if (stat.isDirectory()) {
+        this.validateBitloopsFiles(fileUri);
+      } else if (fileUri.endsWith('.bl')) {
+        // console.log('validating fileName::', fileUri);
         const textDocument = TextDocument.create(
-          'file://' + filename,
+          FileUtils.pathToDocumentUri(fileUri),
           'bitloops',
           1,
-          fs.readFileSync(filename, 'utf8'),
+          fs.readFileSync(fileUri, 'utf8'),
         );
         await this.createDiagnostics(textDocument);
       }
