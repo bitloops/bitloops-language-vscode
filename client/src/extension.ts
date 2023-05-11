@@ -40,7 +40,7 @@ export function activate(context: ExtensionContext) {
     documentSelector: [{ scheme: 'file', language: 'bitloops' }],
     synchronize: {
       // Notify the server about file changes to '.clientrc files contained in the workspace
-      fileEvents: workspace.createFileSystemWatcher('**/.clientrc'),
+      fileEvents: workspace.createFileSystemWatcher('**/*.{bl,clientrc}'),
     },
   };
 

@@ -6,9 +6,8 @@ import {
   InitializeResult,
   TextDocumentSyncKind,
   DidChangeConfigurationNotification,
-  Diagnostic,
-  Connection,
   WorkspaceFolder,
+  DidChangeWatchedFilesParams,
 } from 'vscode-languageserver/node.js';
 
 import { TextDocument } from 'vscode-languageserver-textdocument';
@@ -20,6 +19,7 @@ import { BitloopsAnalyzer } from './handlers/document-text-changed-handler/bitlo
 import * as fs from 'fs';
 import * as path from 'path';
 import { FileUtils } from '../utils/file.js';
+import { handleChangeOnWatchedFiles } from './handlers/watched-files-changed/index.js';
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -112,6 +112,10 @@ export class BitloopsServer {
 
   public completion = CompletionItemProvider.onCompletion;
   public completionResolve = CompletionItemProvider.onCompletionResolve;
+
+  public onDidChangeWatchedFiles(params: DidChangeWatchedFilesParams) {
+    return handleChangeOnWatchedFiles(this.connection, this.analyzer, this.lspClient, params);
+  }
 
   private async createDiagnostics(document: TextDocument): Promise<void> {
     const settings = await this.settingsManger.getDocumentSettings(
