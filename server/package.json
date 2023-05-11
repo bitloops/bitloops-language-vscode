@@ -10,7 +10,7 @@
   "type": "module",
   "scripts": {},
   "dependencies": {
-    "@bitloops/bl-transpiler": "^0.2.0",
+    "@bitloops/bl-transpiler": "^0.4.2",
     "fs": "^0.0.1-security",
     "path": "^0.12.7",
     "vscode-languageserver": "^7.0.0",

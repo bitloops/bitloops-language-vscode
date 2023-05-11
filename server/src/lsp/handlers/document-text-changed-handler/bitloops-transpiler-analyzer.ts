@@ -64,9 +64,6 @@ export class BitloopsAnalyzer implements IAnalyzer {
       core: Object.values(this.core),
       setup: Object.values(this.setup),
     };
-    // this.res.core = Object.values(this.core);
-    // this.res.setup = Object.values(this.setup);
-    // return this.res as TParserInputData;
   }
 
   private updateFileBuffers(document: TextDocument) {
@@ -79,12 +76,12 @@ export class BitloopsAnalyzer implements IAnalyzer {
       // this.setupFileUri = document.uri;
     } else if (document.uri.endsWith('.bl')) {
       const { boundedContext, module } = this.extractFileBoundedContextAndModule(document.uri);
-      console.log(
-        'Extracted boundedContext and module',
-        { boundedContext, module },
-        'for file::',
-        fileName,
-      );
+      // console.log(
+      //   'Extracted boundedContext and module',
+      //   { boundedContext, module },
+      //   'for file::',
+      //   fileName,
+      // );
       this.core[document.uri] = {
         boundedContext,
         module,

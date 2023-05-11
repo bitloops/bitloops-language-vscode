@@ -8,7 +8,7 @@ import {
 } from 'vscode-languageserver/node.js';
 import { documentation } from '../../../information/documentation.js';
 import { details } from '../../../information/details.js';
-import { allKeywords, components, keywords } from '../../models/keywords.js';
+import { allKeywords } from '../../models/keywords.js';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 
 //this would come from package
