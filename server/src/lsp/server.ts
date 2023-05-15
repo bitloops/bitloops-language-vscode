@@ -49,7 +49,7 @@ export class BitloopsServer {
   }
 
   public async onDidChangeContent(change: TextDocumentChangeEvent<TextDocument>): Promise<void> {
-    console.log('onDidChangeContent::', change.document.uri);
+    // console.log('onDidChangeContent::', change.document.uri);
     this.createDiagnostics(change.document);
   }
 
@@ -106,8 +106,6 @@ export class BitloopsServer {
   public onDidClose(e: TextDocumentChangeEvent<TextDocument>) {
     console.log('onDidClose::', e.document.uri);
     this.settingsManger.clear(e);
-    // const uri = e.document.uri;
-    // this.analyzer.removeFile(uri);
   }
 
   public completion = CompletionItemProvider.onCompletion;
@@ -143,7 +141,9 @@ export class BitloopsServer {
       }
       console.log('setupFilePath::', setupFilePath);
       this.analyzer.setSetupFile(setupFilePath);
-      await this.validateBitloopsFiles(workspaceRoot);
+      this.validateBitloopsFiles(workspaceRoot);
+      console.log('Validating workspace');
+      this.analyzer.analyzeAll();
     }
   }
   private findSetupFilePath(workspaceRoot: string): string | null {
@@ -161,7 +161,7 @@ export class BitloopsServer {
     return foundSetupFilePath;
   }
 
-  private async validateBitloopsFiles(startPath: string): Promise<void> {
+  private validateBitloopsFiles(startPath: string): void {
     const files = fs.readdirSync(startPath);
     for (var i = 0; i < files.length; i++) {
       const fileUri = path.join(startPath, files[i]);
@@ -176,7 +176,8 @@ export class BitloopsServer {
           1,
           fs.readFileSync(fileUri, 'utf8'),
         );
-        await this.createDiagnostics(textDocument);
+        this.analyzer.addNewFile(textDocument);
+        // await this.createDiagnostics(textDocument);
       }
     }
   }

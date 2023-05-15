@@ -9,7 +9,7 @@ export const handleChangeOnWatchedFiles = (
   _change: DidChangeWatchedFilesParams,
 ) => {
   // Monitored files have change in VSCode
-  connection.console.log('We received an file change event');
+  // connection.console.log('We received a file change event');
   for (let i = 0; i < _change.changes.length; i++) {
     const change = _change.changes[i];
     switch (change.type) {
@@ -21,6 +21,7 @@ export const handleChangeOnWatchedFiles = (
         analyzer.removeFile(fileUri);
         console.log('File deleted: ' + fileUri);
         lspClient.emptyFileDiagnostics(fileUri);
+        // TODO call the analyzer to check all files?
         break;
       }
       case FileChangeType.Changed:

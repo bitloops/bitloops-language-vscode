@@ -1,19 +1,24 @@
 import {
-  OriginalParserError,
   TParserInputData,
   isParserErrors,
   isIntermediateASTValidationErrors,
   transpiler,
-  OriginalValidatorError,
+  TranspilerErrors,
+  Transpiler,
+  ValidationErrors,
+  ParserSyntacticErrors,
 } from '@bitloops/bl-transpiler';
 import { Diagnostic } from 'vscode-languageserver/node.js';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { IAnalyzer } from './analyzer.js';
 import { DiagnosticFactory, LogLevel } from '../../../utils/diagnostic.js';
 import { TFileId, TParserCoreInputData, TParserSetupInputData } from '../../../types.js';
+import { FileUtils } from '../../../utils/file.js';
+
+export type TFileDiagnostics = Record<TFileId, Diagnostic[]>;
 
 export class BitloopsAnalyzer implements IAnalyzer {
-  private diagnostics: Record<TFileId, Diagnostic[]> = {};
+  private diagnostics: TFileDiagnostics = {};
 
   private setup: Record<string, TParserSetupInputData> = {};
 
@@ -21,30 +26,31 @@ export class BitloopsAnalyzer implements IAnalyzer {
 
   private setupFileUri: string = '';
 
-  analyze(document: TextDocument): Record<string, Diagnostic[]> {
+  analyze(document: TextDocument): TFileDiagnostics {
+    this.addNewFile(document);
+    return this.analyzeAll();
+  }
+
+  analyzeAll(): TFileDiagnostics {
     try {
       this.clearPreviousDiagnostics();
-      const transpilerInput = this.documentToParserInput(document);
+      const transpilerInput = this.fileBuffersToParserInput();
       if (!this.projectStructureIsCorrect(transpilerInput)) {
         return this.diagnostics;
       }
-      // Now a single ok file, clears all the diagnostics,
 
       const intermediateModelOrErrors = transpiler.bitloopsCodeToIntermediateModel(transpilerInput);
-      if (isParserErrors(intermediateModelOrErrors)) {
-        this.mapParserErrorsToLSPDiagnostics(intermediateModelOrErrors, document);
-        return this.diagnostics;
-      }
-      if (isIntermediateASTValidationErrors(intermediateModelOrErrors)) {
-        this.mapValidatorErrorsToLSPDiagnostics(intermediateModelOrErrors);
+      if (Transpiler.isTranspilerError(intermediateModelOrErrors)) {
+        this.mapTranspilerErrorsToLSPDiagnostics(intermediateModelOrErrors);
         return this.diagnostics;
       }
       return this.diagnostics;
     } catch (e) {
-      console.log('error', e);
+      console.error('Unexpected error:', e);
       return {};
     }
   }
+
   setSetupFile(setupFileUri: string): void {
     this.setupFileUri = setupFileUri;
   }
@@ -55,18 +61,17 @@ export class BitloopsAnalyzer implements IAnalyzer {
     delete this.diagnostics[fileUri];
   }
 
-  private documentToParserInput(document: TextDocument): TParserInputData {
-    if (!(document.uri in this.diagnostics)) {
-      this.diagnostics[document.uri] = [];
-    }
-    this.updateFileBuffers(document);
+  private fileBuffersToParserInput(): TParserInputData {
     return {
       core: Object.values(this.core),
       setup: Object.values(this.setup),
     };
   }
 
-  private updateFileBuffers(document: TextDocument) {
+  /**
+   * Updates the file buffers
+   */
+  addNewFile(document: TextDocument) {
     const fileName = document.uri.split('/').slice(-1)[0];
     if (fileName === 'setup.bl') {
       this.setup[document.uri] = {
@@ -165,56 +170,90 @@ export class BitloopsAnalyzer implements IAnalyzer {
     return { boundedContext, module };
   }
 
-  private mapParserErrorsToLSPDiagnostics(
-    parserErrors: OriginalParserError,
-    document: TextDocument,
-  ): void {
-    parserErrors.forEach((e) => {
-      this.diagnostics[e.fileId] = [];
-    });
-    for (const key in this.diagnostics) {
-      this.diagnostics[key] = [];
+  private mapTranspilerErrorsToLSPDiagnostics(transpilerErrors: TranspilerErrors): void {
+    if (isParserErrors(transpilerErrors)) {
+      this.mapParserErrorsToLSPDiagnostics(transpilerErrors);
+      return;
     }
-    parserErrors.map((e) =>
-      this.diagnostics[e.fileId].push(
-        DiagnosticFactory.create(
-          1,
-          {
-            start: document.positionAt(e.start),
-            end: document.positionAt(e.stop),
-          },
-          `line: ${e.line}:${e.column}, offendingSymbol: ${e.offendingToken.text}, msg: ${e.message}`,
-          e.fileId,
-        ),
-      ),
-    );
+    if (isIntermediateASTValidationErrors(transpilerErrors)) {
+      this.mapValidatorErrorsToLSPDiagnostics(transpilerErrors);
+      return;
+    }
+    throw new Error('Unknown error type');
   }
 
-  private mapValidatorErrorsToLSPDiagnostics(validatorErrors: OriginalValidatorError): void {
-    validatorErrors.forEach((e) => {
-      this.diagnostics[e.metadata.fileId] = [];
-    });
+  private mapParserErrorsToLSPDiagnostics(parserErrors: ParserSyntacticErrors): void {
+    // console.log('Mapping parser errors to LSP diagnostics');
+    console.log(`Found ${parserErrors.length} parser syntactic errors`);
+    for (const parserError of parserErrors) {
+      this.diagnostics[parserError.fileId] = [];
+    }
+    // Clear previous diagnostics
     for (const key in this.diagnostics) {
       this.diagnostics[key] = [];
     }
-    validatorErrors.map((e) => {
+    // TODO this can be optimized by not creating a new text document for each error, but rather
+    // keeping a local cache of text documents
+    const fileIdsToTextDocuments: Record<TFileId, TextDocument> = {};
+    for (const parserError of parserErrors) {
+      const fileUri = parserError.fileId;
+      let textDocument = fileIdsToTextDocuments[fileUri];
+      if (!textDocument) {
+        const fileContent = this.core[fileUri]?.fileContents || this.setup[fileUri]?.fileContents;
+        if (!fileContent) {
+          throw new Error(`File content not found for fileUri ${fileUri}`);
+        }
+        textDocument = TextDocument.create(fileUri, 'bitloops', 1, fileContent);
+      }
+      const diagnosticRange = {
+        start: textDocument.positionAt(parserError.start),
+        end: textDocument.positionAt(parserError.stop),
+      };
+      // console.log({
+      //   message: parserError.message,
+      //   diagnosticRange,
+      //   fileUri,
+      // });
+      this.diagnostics[fileUri].push(
+        DiagnosticFactory.create(
+          LogLevel.Error,
+          diagnosticRange,
+          `${parserError.message}\noffendingSymbol: ${parserError.offendingToken.text}\nline: ${parserError.line}:${parserError.column}`,
+          fileUri,
+        ),
+      );
+    }
+  }
+
+  private mapValidatorErrorsToLSPDiagnostics(validatorErrors: ValidationErrors): void {
+    // console.log('Mapping validator errors to LSP diagnostics');
+    console.log(`Found ${validatorErrors.length} semantic validation errors`);
+    for (const validatorError of validatorErrors) {
+      this.diagnostics[validatorError.metadata.fileId] = [];
+    }
+    // Clear previous diagnostics
+    for (const key in this.diagnostics) {
+      this.diagnostics[key] = [];
+    }
+    for (const e of validatorErrors) {
+      const rangeZeroBased = {
+        start: {
+          line: e.metadata.start.line - 1,
+          character: e.metadata.start.column - 1,
+        },
+        end: {
+          line: e.metadata.end.line - 1,
+          character: e.metadata.end.column - 1,
+        },
+      };
       this.diagnostics[e.metadata.fileId].push(
         DiagnosticFactory.create(
-          1,
-          {
-            start: {
-              line: e.metadata.start.line - 1,
-              character: e.metadata.start.column - 1,
-            },
-            end: {
-              line: e.metadata.end.line - 1,
-              character: e.metadata.end.column - 1,
-            },
-          },
-          `line: ${e.metadata.start.line}:${e.metadata.start.column} , msg: ${e.message}`,
+          LogLevel.Error,
+          rangeZeroBased,
+          `${e.message}\nLine: ${e.metadata.start.line}:${e.metadata.start.column}`,
           e.metadata.fileId,
         ),
       );
-    });
+    }
   }
 }
