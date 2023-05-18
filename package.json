@@ -78,6 +78,12 @@
         "scopeName": "source.bitloops",
         "path": "./syntaxes/bitloops.tmLanguage.json"
       }
+    ],
+    "commands": [
+      {
+        "command": "bitloops.restartLSP",
+        "title": "Bitloops: Restart LSP Server"
+      }
     ]
   },
   "devDependencies": {

@@ -141,6 +141,7 @@ export const keywords = [
   'is',
   'getClass',
   'toString',
+  'ifError',
 ];
 
 // 'StandardVO',

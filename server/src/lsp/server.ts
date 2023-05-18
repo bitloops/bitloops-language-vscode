@@ -135,13 +135,15 @@ export class BitloopsServer {
       // For now we only handle 1 setup.bl file, consequently only 1 bl project
       // Perhaps we would isolate each project, having its own analyzer
 
-      const setupFilePath = this.findSetupFilePath(workspaceRoot);
+      const setupFilePath: string | null = this.findSetupFilePath(workspaceRoot);
       if (setupFilePath === null) {
-        throw new Error('No setup.bl file found');
+        // Inform the user that no setup.bl file was found
+        this.lspClient.showWarningMessage('No setup.bl file found');
+        // Even if the setup is not found, we still want to analyze the files and register them
       }
       console.log('setupFilePath::', setupFilePath);
       this.analyzer.setSetupFile(setupFilePath);
-      this.validateBitloopsFiles(workspaceRoot);
+      this.registerBitloopsFiles(workspaceRoot);
       console.log('Validating workspace');
       this.analyzer.analyzeAll();
     }
@@ -161,13 +163,13 @@ export class BitloopsServer {
     return foundSetupFilePath;
   }
 
-  private validateBitloopsFiles(startPath: string): void {
+  private registerBitloopsFiles(startPath: string): void {
     const files = fs.readdirSync(startPath);
     for (var i = 0; i < files.length; i++) {
       const fileUri = path.join(startPath, files[i]);
       const stat = fs.lstatSync(fileUri);
       if (stat.isDirectory()) {
-        this.validateBitloopsFiles(fileUri);
+        this.registerBitloopsFiles(fileUri);
       } else if (fileUri.endsWith('.bl')) {
         // console.log('validating fileName::', fileUri);
         const textDocument = TextDocument.create(

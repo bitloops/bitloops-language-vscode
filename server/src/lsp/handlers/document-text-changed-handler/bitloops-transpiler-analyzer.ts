@@ -13,7 +13,6 @@ import { TextDocument } from 'vscode-languageserver-textdocument';
 import { IAnalyzer } from './analyzer.js';
 import { DiagnosticFactory, LogLevel } from '../../../utils/diagnostic.js';
 import { TFileId, TParserCoreInputData, TParserSetupInputData } from '../../../types.js';
-import { FileUtils } from '../../../utils/file.js';
 
 export type TFileDiagnostics = Record<TFileId, Diagnostic[]>;
 
@@ -24,7 +23,7 @@ export class BitloopsAnalyzer implements IAnalyzer {
 
   private core: Record<string, TParserCoreInputData> = {};
 
-  private setupFileUri: string = '';
+  private setupFileUri: string | null = null;
 
   analyze(document: TextDocument): TFileDiagnostics {
     this.addNewFile(document);
@@ -34,11 +33,19 @@ export class BitloopsAnalyzer implements IAnalyzer {
   analyzeAll(): TFileDiagnostics {
     try {
       this.clearPreviousDiagnostics();
+      if (this.setupFileUri === null) {
+        return this.handleMissingSetupFile();
+      }
       const transpilerInput = this.fileBuffersToParserInput();
       if (!this.projectStructureIsCorrect(transpilerInput)) {
         return this.diagnostics;
       }
 
+      console.log(`Analyzing...[${transpilerInput.core.length}] files`);
+      // console.log(
+      //   'Info:',
+      //   transpilerInput.core.map((x) => ({ bc: x.boundedContext, mod: x.module })),
+      // );
       const intermediateModelOrErrors = transpiler.bitloopsCodeToIntermediateModel(transpilerInput);
       if (Transpiler.isTranspilerError(intermediateModelOrErrors)) {
         this.mapTranspilerErrorsToLSPDiagnostics(intermediateModelOrErrors);
@@ -58,7 +65,26 @@ export class BitloopsAnalyzer implements IAnalyzer {
   removeFile(fileUri: string): void {
     delete this.setup[fileUri];
     delete this.core[fileUri];
-    delete this.diagnostics[fileUri];
+    // We need to make its diagnostics disappear
+    this.diagnostics[fileUri] = [];
+    // Consider which step would be appropriate to delete empty diagnostics
+  }
+
+  private handleMissingSetupFile(): TFileDiagnostics {
+    const message = `Setup file not found. Please create a file named setup.bl at the root of your project`;
+    for (const key in this.core) {
+      this.diagnostics[key] = [
+        DiagnosticFactory.create(
+          LogLevel.Error,
+          {
+            start: { line: 0, character: 0 },
+            end: { line: 0, character: 0 },
+          },
+          message,
+        ),
+      ];
+    }
+    return this.diagnostics;
   }
 
   private fileBuffersToParserInput(): TParserInputData {
@@ -78,7 +104,7 @@ export class BitloopsAnalyzer implements IAnalyzer {
         fileId: document.uri,
         fileContents: document.getText(),
       };
-      // this.setupFileUri = document.uri;
+      this.setupFileUri = document.uri;
     } else if (document.uri.endsWith('.bl')) {
       const { boundedContext, module } = this.extractFileBoundedContextAndModule(document.uri);
       // console.log(
@@ -145,8 +171,9 @@ export class BitloopsAnalyzer implements IAnalyzer {
     boundedContext: string | 'unknown';
     module: string | 'unknown';
   } {
-    if (this.setupFileUri === '') {
+    if (this.setupFileUri === null) {
       console.log("Setup file hasn't been set yet");
+      return { boundedContext: 'unknown', module: 'unknown' };
     }
     const projectRootPath = this.setupFileUri.split('/').slice(0, -1).join('/');
     if (!fileUri.startsWith(projectRootPath)) {

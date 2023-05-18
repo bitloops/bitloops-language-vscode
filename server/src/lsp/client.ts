@@ -5,6 +5,9 @@ export interface ILspClient {
   emptyFileDiagnostics(fileUri: string): void;
   showLoadingProgress(message: string): void;
   hideLoadingProgress(): void;
+
+  showErrorMessage(message: string): void;
+  showWarningMessage(message: string): void;
 }
 
 export class LspClientImpl implements ILspClient {
@@ -22,5 +25,12 @@ export class LspClientImpl implements ILspClient {
 
   emptyFileDiagnostics(fileUri: string): void {
     this.connection.sendDiagnostics({ uri: fileUri, diagnostics: [] });
+  }
+  showErrorMessage(message: string): void {
+    this.connection.window.showErrorMessage(message);
+  }
+
+  showWarningMessage(message: string): void {
+    this.connection.window.showWarningMessage(message);
   }
 }
