@@ -3,15 +3,14 @@ import {
   TextDocuments,
   ProposedFeatures,
   _Connection,
-  FileChangeType,
-  FileEvent,
-  DidChangeWatchedFilesParams,
 } from 'vscode-languageserver/node.js';
 
 import { TextDocument } from 'vscode-languageserver-textdocument';
+import debounce from 'debounce';
 import { LspClientImpl } from './client.js';
 import { BitloopsServer } from './server.js';
-import debounce from 'debounce';
+
+const DEBOUNCE_INTERVAL = 500;
 
 export class LspConnection {
   private connection: _Connection;
@@ -32,7 +31,9 @@ export class LspConnection {
     this.connection.onInitialized(server.onInitialized.bind(server));
 
     this.documents.onDidClose(server.onDidClose.bind(server));
-    this.documents.onDidChangeContent(debounce(server.onDidChangeContent.bind(server), 500));
+    this.documents.onDidChangeContent(
+      debounce(server.onDidChangeContent.bind(server), DEBOUNCE_INTERVAL),
+    );
     this.connection.onCompletion(server.completion.bind(server, this.documents));
     this.connection.onCompletionResolve(server.completionResolve.bind(server));
 

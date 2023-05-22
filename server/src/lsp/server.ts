@@ -87,9 +87,9 @@ export class BitloopsServer {
 
     this.stateManager.updateFile(document);
     const workspaceDiagnostics = this.analyzer.analyze();
-    console.log({
-      workspaceDiagnostics,
-    });
+    // console.log({
+    //   workspaceDiagnostics,
+    // });
     for (const [uri, diagnostics] of workspaceDiagnostics) {
       // console.log('publishing diagnostics::', { uri, diagnostics });
       this.lspClient.publishDiagnostics({ uri, diagnostics });
