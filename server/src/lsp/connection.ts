@@ -35,7 +35,6 @@ export class LspConnection {
     this.connection.onCompletion(server.completion.bind(server, this.documents));
     this.connection.onCompletionResolve(server.completionResolve.bind(server));
 
-    // Handle workspace/didChangeWatchedFiles notification, TODO fix this, not working
     this.connection.onDidChangeWatchedFiles(server.onDidChangeWatchedFiles.bind(server));
 
     return this;

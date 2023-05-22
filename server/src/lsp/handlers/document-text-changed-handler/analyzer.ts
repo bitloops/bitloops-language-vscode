@@ -9,7 +9,7 @@ export interface IAnalyzer {
    */
   analyze(document: TextDocument): TFileDiagnostics;
   analyzeAll(): TFileDiagnostics;
-  setSetupFile(fileUri: TFileId): void;
-  addNewFile(document: TextDocument): void;
-  removeFile(fileUri: TFileId): void;
+  // setSetupFile(fileUri: TFileId): void;
+  // addNewFile(document: TextDocument): void;
+  // removeFile(fileUri: TFileId): void;
 }
