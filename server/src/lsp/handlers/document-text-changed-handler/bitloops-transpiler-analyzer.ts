@@ -9,26 +9,15 @@ import {
 } from '@bitloops/bl-transpiler';
 import { Diagnostic } from 'vscode-languageserver/node.js';
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { IAnalyzer } from './analyzer.js';
+import { IAnalyzer } from './interface.js';
 import { DiagnosticFactory, LogLevel } from '../../../utils/diagnostic.js';
 import { TFileId } from '../../../types.js';
-import { StateManager } from '../../services/StateManager.js';
-
-export type TFileDiagnostics = Record<TFileId, Diagnostic[]>;
+import { StateManager, TFileDiagnostics } from '../../services/StateManager.js';
 
 export class BitloopsAnalyzer implements IAnalyzer {
   constructor(private stateManager: StateManager) {}
 
-  /**
-   * Remember to handle errors and edge cases, such as
-   * - what happens if a file is deleted while its content update is still debounced. Would probably
-   */
-  analyze(document: TextDocument): TFileDiagnostics {
-    this.stateManager.updateFile(document);
-    return this.analyzeAll();
-  }
-
-  analyzeAll(): TFileDiagnostics {
+  analyze(): TFileDiagnostics {
     try {
       this.stateManager.clearPreviousDiagnostics();
       if (this.stateManager.getSetupFile() === null) {
@@ -49,10 +38,11 @@ export class BitloopsAnalyzer implements IAnalyzer {
         this.mapTranspilerErrorsToLSPDiagnostics(intermediateModelOrErrors);
         return this.stateManager.getDiagnostics();
       }
+      console.log('Workspace analysis completed without errors');
       return this.stateManager.getDiagnostics();
     } catch (e) {
       console.error('Unexpected error:', e);
-      return {};
+      return new Map();
     }
   }
 

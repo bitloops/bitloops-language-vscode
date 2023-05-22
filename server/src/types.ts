@@ -18,7 +18,9 @@
  *  For further information you can contact legal(at)bitloops.com.
  */
 
+// We use FileUri as file identifier, it's different from the file path
 export type TFileId = string;
+
 type TFileContents = string;
 
 export type TParserCoreInputData = {

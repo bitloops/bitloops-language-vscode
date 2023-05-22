@@ -15,7 +15,7 @@ import { basename, dirname } from 'path';
 import { TFileId, TParserCoreInputData, TParserSetupInputData } from '../../types.js';
 import { DiagnosticFactory, LogLevel } from '../../utils/diagnostic.js';
 
-export type TFileDiagnostics = Record<TFileId, Diagnostic[]>;
+export type TFileDiagnostics = Map<TFileId, Diagnostic[]>;
 
 /**
  * Possible edges cases to consider:
@@ -31,6 +31,11 @@ export type TFileDiagnostics = Record<TFileId, Diagnostic[]>;
  * - Error handling: If an error occurs while reading a file or updating your server's state, you need to ensure that your server can recover gracefully. This might involve catching and handling errors, logging them for debugging purposes, and cleaning up any inconsistent state.
 
  * - File not opened: If a file is created but not opened in the editor, the client might not send an onDidChangeContent event, so your server won't know to read the file's content. You might need to handle this case specifically, or accept that your server won't know about files until they're opened.
+
+
+    Extras:
+    We should handle the possibility that files may be deleted outside of the editor, in which case the deletion event might not be immediately detected by the LSP.
+
  */
 export class StateManager {
   // Keeps track of file state, handles addFile, removeFile, updateFile
@@ -41,7 +46,7 @@ export class StateManager {
 
   private setupFileUri: string | null = null;
 
-  private diagnostics: TFileDiagnostics = {};
+  private diagnostics: Map<TFileId, Diagnostic[]> = new Map();
 
   public setSetupFile(setupFileUri: string): void {
     this.setupFileUri = setupFileUri;
@@ -55,20 +60,29 @@ export class StateManager {
     return this.diagnostics;
   }
   public setDiagnostics(uri: string, diagnostics: Diagnostic[]) {
-    this.diagnostics[uri] = diagnostics;
+    this.diagnostics.set(uri, diagnostics);
   }
 
   public addDiagnostics(uri: string, diagnostics: Diagnostic[]) {
-    if (!this.diagnostics[uri]) this.diagnostics[uri] = [];
-    this.diagnostics[uri].push(...diagnostics);
+    const existingDiagnostics = this.diagnostics.get(uri) || [];
+    this.diagnostics.set(uri, [...existingDiagnostics, ...diagnostics]);
   }
 
   public removeFile(fileUri: string): void {
     delete this.setup[fileUri];
     delete this.core[fileUri];
     // We need to make its diagnostics disappear
-    this.diagnostics[fileUri] = [];
+    this.diagnostics.set(fileUri, []);
+    if (this.fileIsSetupFile(fileUri)) {
+      this.setupFileUri = null;
+    }
     // Consider which step would be appropriate to delete empty diagnostics
+  }
+
+  private fileIsSetupFile(fileUri: string): boolean {
+    const filePath = fileURLToPath(fileUri);
+    const fileName = basename(filePath);
+    return fileName === 'setup.bl';
   }
 
   /**
@@ -83,6 +97,8 @@ export class StateManager {
         fileContents: document.getText(),
       };
       this.setupFileUri = document.uri;
+      // Recalculate bounded contexts and modules for all files
+      this.updateFilesBoundedContextAndModule();
     } else if (document.uri.endsWith('.bl')) {
       const { boundedContext, module } = this.extractFileBoundedContextAndModule(document.uri);
       // console.log(
@@ -100,6 +116,14 @@ export class StateManager {
     }
   }
 
+  private updateFilesBoundedContextAndModule() {
+    for (const file of Object.values(this.core)) {
+      const { boundedContext, module } = this.extractFileBoundedContextAndModule(file.fileId);
+      file.boundedContext = boundedContext;
+      file.module = module;
+    }
+  }
+
   public updateFile(document: TextDocument) {
     // For now, we are not doing anything special here
     this.addNewFile(document);
@@ -108,7 +132,7 @@ export class StateManager {
   public handleMissingSetupFile(): TFileDiagnostics {
     const message = `Setup file not found. Please create a file named setup.bl at the root of your project`;
     for (const key in this.core) {
-      this.diagnostics[key] = [
+      this.diagnostics.set(key, [
         DiagnosticFactory.create(
           LogLevel.Error,
           {
@@ -117,7 +141,7 @@ export class StateManager {
           },
           message,
         ),
-      ];
+      ]);
     }
     return this.diagnostics;
   }
@@ -130,8 +154,8 @@ export class StateManager {
   }
 
   public clearPreviousDiagnostics(): void {
-    for (const key in this.diagnostics) {
-      this.diagnostics[key] = [];
+    for (const key of this.diagnostics.keys()) {
+      this.diagnostics.set(key, []);
     }
   }
 
@@ -147,7 +171,7 @@ export class StateManager {
         } else if (a.module === 'unknown') {
           message += ` (module is unknown)`;
         }
-        this.diagnostics[a.fileId] = [
+        this.diagnostics.set(a.fileId, [
           DiagnosticFactory.create(
             LogLevel.Error,
             {
@@ -156,7 +180,7 @@ export class StateManager {
             },
             message,
           ),
-        ];
+        ]);
         console.log('Adding diagnostic for fileName', a.fileId);
         result = false;
       }

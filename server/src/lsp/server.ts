@@ -13,7 +13,7 @@ import {
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { CompletionItemProvider } from './handlers/completion-handler/completion.js';
 import { WorkspaceSettingsManager } from '../utils/settings.js';
-import { IAnalyzer } from './handlers/document-text-changed-handler/analyzer.js';
+import { IAnalyzer } from './handlers/document-text-changed-handler/interface.js';
 import { ILspClient } from './client.js';
 import { BitloopsAnalyzer } from './handlers/document-text-changed-handler/bitloops-transpiler-analyzer.js';
 import * as fs from 'fs';
@@ -63,6 +63,10 @@ export class BitloopsServer {
    * This function creates diagnostics for the changed document.
    *
    * NOTE: This function should not be used to maintain state, since it can be subject to delay due to debounce.
+   *
+   * TODOS:
+   * Remember to handle errors and edge cases, such as
+   * - what happens if a file is deleted while its content update is still debounced.
    */
   public async onDidChangeContent(change: TextDocumentChangeEvent<TextDocument>): Promise<void> {
     console.log('onDidChangeContent::', change.document.uri);
@@ -81,9 +85,14 @@ export class BitloopsServer {
     );
     // We could use retrieved settings here to change the way we parse the document
 
-    const diagnostics = this.analyzer.analyze(document);
-    for (const [uri, diagnostic] of Object.entries(diagnostics)) {
-      this.lspClient.publishDiagnostics({ uri: uri, diagnostics: diagnostic });
+    this.stateManager.updateFile(document);
+    const workspaceDiagnostics = this.analyzer.analyze();
+    console.log({
+      workspaceDiagnostics,
+    });
+    for (const [uri, diagnostics] of workspaceDiagnostics) {
+      // console.log('publishing diagnostics::', { uri, diagnostics });
+      this.lspClient.publishDiagnostics({ uri, diagnostics });
     }
   }
 
@@ -134,6 +143,7 @@ export class BitloopsServer {
       this.connection.client.register(DidChangeConfigurationNotification.type, undefined);
     }
     await this.validateWorkspace(this.workspaceFolders);
+
     if (this.hasWorkspaceFolderCapability) {
       this.connection.workspace.onDidChangeWorkspaceFolders((_event) => {
         this.connection.console.log('Workspace folder change event received.');
@@ -151,10 +161,16 @@ export class BitloopsServer {
   public completionResolve = CompletionItemProvider.onCompletionResolve;
 
   public onDidChangeWatchedFiles(params: DidChangeWatchedFilesParams) {
-    return handleChangeOnWatchedFiles(this.connection, this.stateManager, this.lspClient, params);
+    return handleChangeOnWatchedFiles(
+      this.connection,
+      this.stateManager,
+      this.analyzer,
+      this.lspClient,
+      params,
+    );
   }
 
-  private async validateWorkspace(workspaceFolders: WorkspaceFolder[]) {
+  private async validateWorkspace(workspaceFolders: WorkspaceFolder[]): Promise<void> {
     for (const workspaceFolder of workspaceFolders) {
       // TODO use fileURLToPath instead
       const workspaceRoot = path.resolve(workspaceFolder.uri.replace('file://', ''));
@@ -171,7 +187,11 @@ export class BitloopsServer {
       this.stateManager.setSetupFile(setupFilePath);
       this.registerBitloopsFiles(workspaceRoot);
       console.log('Validating workspace');
-      this.analyzer.analyzeAll();
+
+      const workspaceDiagnostics = this.analyzer.analyze();
+      for (const [uri, diagnostics] of workspaceDiagnostics) {
+        this.lspClient.publishDiagnostics({ uri, diagnostics });
+      }
     }
   }
   private findSetupFilePath(workspaceRoot: string): string | null {

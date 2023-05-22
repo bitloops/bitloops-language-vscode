@@ -1,7 +1,7 @@
 import { DidChangeWatchedFilesParams, FileChangeType, _Connection } from 'vscode-languageserver';
 import fs from 'fs/promises';
 import { fileURLToPath } from 'url';
-import { IAnalyzer } from '../document-text-changed-handler/analyzer.js';
+import { IAnalyzer } from '../document-text-changed-handler/interface.js';
 import { ILspClient } from '../../client.js';
 import { resolve } from 'path';
 import { TextDocument } from 'vscode-languageserver-textdocument';
@@ -10,6 +10,7 @@ import { StateManager } from '../../services/StateManager.js';
 export const handleChangeOnWatchedFiles = async (
   connection: _Connection,
   stateManger: StateManager,
+  analyzer: IAnalyzer,
   lspClient: ILspClient,
   _change: DidChangeWatchedFilesParams,
 ) => {
@@ -28,6 +29,10 @@ export const handleChangeOnWatchedFiles = async (
         const textDocument = TextDocument.create(event.uri, 'bitloops', 1, fileContent);
 
         stateManger.addNewFile(textDocument);
+        const workspaceDiagnostics = analyzer.analyze();
+        for (const [uri, diagnostics] of workspaceDiagnostics) {
+          lspClient.publishDiagnostics({ uri, diagnostics });
+        }
         break;
       // Deleted: This event is fired when a file is deleted from the workspace.
       case FileChangeType.Deleted: {
@@ -35,7 +40,12 @@ export const handleChangeOnWatchedFiles = async (
         stateManger.removeFile(fileUri);
         console.log('File deleted: ' + fileUri);
         lspClient.emptyFileDiagnostics(fileUri);
-        // TODO call the analyzer to check all files?
+
+        // Call the analyzer to check all files
+        const workspaceDiagnostics = analyzer.analyze();
+        for (const [uri, diagnostics] of workspaceDiagnostics) {
+          lspClient.publishDiagnostics({ uri, diagnostics });
+        }
         break;
       }
       // Changed: This event is fired when an existing file's metadata (like permissions or timestamps) is changed. Note that it doesn't represent the change in the content of a file, that's handled by onDidChangeContent.

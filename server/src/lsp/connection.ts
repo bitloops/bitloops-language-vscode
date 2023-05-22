@@ -11,6 +11,7 @@ import {
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { LspClientImpl } from './client.js';
 import { BitloopsServer } from './server.js';
+import debounce from 'debounce';
 
 export class LspConnection {
   private connection: _Connection;
@@ -31,7 +32,7 @@ export class LspConnection {
     this.connection.onInitialized(server.onInitialized.bind(server));
 
     this.documents.onDidClose(server.onDidClose.bind(server));
-    this.documents.onDidChangeContent(server.onDidChangeContent.bind(server));
+    this.documents.onDidChangeContent(debounce(server.onDidChangeContent.bind(server), 500));
     this.connection.onCompletion(server.completion.bind(server, this.documents));
     this.connection.onCompletionResolve(server.completionResolve.bind(server));
 
