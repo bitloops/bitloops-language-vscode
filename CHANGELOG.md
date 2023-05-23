@@ -6,7 +6,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### 0.3.3
 
-Refactored state manager, added rebounce, updated transpiler & validator, added restart command
+Refactored state manager, added debounce, updated transpiler & validator, added restart command
 
 ### 0.3.2
 
