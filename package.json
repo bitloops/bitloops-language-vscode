@@ -9,7 +9,7 @@
   },
   "icon": "assets/images/bitloops-language-logo-256x256.png",
   "license": "MIT",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "scripts": {
     "vs:package": "vsce package",
     "vs:publish": "vsce publish",
@@ -77,6 +77,12 @@
         "language": "bitloops",
         "scopeName": "source.bitloops",
         "path": "./syntaxes/bitloops.tmLanguage.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "bitloops.restartLSP",
+        "title": "Bitloops: Restart LSP Server"
       }
     ]
   },

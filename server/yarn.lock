@@ -2,16 +2,21 @@
 # yarn lockfile v1
 
 
-"@bitloops/bl-transpiler@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@bitloops/bl-transpiler/-/bl-transpiler-0.2.0.tgz#0829384701af3086737e9c30ac724c19dd624e74"
-  integrity sha512-PYcg08m0YCwWzLkufgB3ULgFncSW1BE50qdp5DiMFyRT/5mioDT9hiFcl0cRZJDY8s5hMeWkDRogSI17SOSCtw==
+"@bitloops/bl-transpiler@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@bitloops/bl-transpiler/-/bl-transpiler-0.6.0.tgz#1e0c1630b3f4bc25ae57031730c81eb80c701044"
+  integrity sha512-341dmGiLkBh6bMSuaoutF5u+wn0hHS6noEaiJTXHqnkBGTKCnyIolSOFGqVOHizzjVb5WiX5CABTfMTtcu1Dlg==
   dependencies:
-    antlr4 "^4.11.0"
+    antlr4 "4.11.0"
     lodash "^4.17.21"
     prettier "^2.7.1"
 
-antlr4@^4.11.0:
+"@types/debounce@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@types/debounce/-/debounce-1.2.1.tgz#79b65710bc8b6d44094d286aecf38e44f9627852"
+  integrity sha512-epMsEE85fi4lfmJUH/89/iV/LI+F5CvNIvmgs5g5jYFPfhO2S/ae8WSsLOKWdwtoaZw9Q2IhJ4tQ5tFCcS/4HA==
+
+antlr4@4.11.0:
   version "4.11.0"
   resolved "https://registry.yarnpkg.com/antlr4/-/antlr4-4.11.0.tgz#d7466f5044fa6e333c0ec821b30c6157f6b004ae"
   integrity sha512-GUGlpE2JUjAN+G8G5vY+nOoeyNhHsXoIJwP1XF1oRw89vifA1K46T6SEkwLwr7drihN7I/lf0DIjKc4OZvBX8w==
@@ -33,6 +38,11 @@ concat-map@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
   integrity sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==
+
+debounce@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/debounce/-/debounce-1.2.1.tgz#38881d8f4166a5c5848020c11827b834bcb3e0a5"
+  integrity sha512-XRRe6Glud4rd/ZGQfiV1ruXSfbvfJedlV9Y6zOlP+2K04vBYiJEte6stfFkCP03aMnY5tsipamumUjL14fofug==
 
 fs.realpath@^1.0.0:
   version "1.0.0"

@@ -1,7 +1,7 @@
 {
   "name": "bitloops-lsp-server",
   "description": "BitLoops Language Server",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "publisher": "Bitloops",
   "license": "MIT",
   "engines": {
@@ -10,13 +10,15 @@
   "type": "module",
   "scripts": {},
   "dependencies": {
-    "@bitloops/bl-transpiler": "^0.2.0",
+    "@bitloops/bl-transpiler": "^0.6.0",
+    "debounce": "^1.2.1",
     "fs": "^0.0.1-security",
     "path": "^0.12.7",
     "vscode-languageserver": "^7.0.0",
     "vscode-languageserver-textdocument": "^1.0.4"
   },
   "devDependencies": {
+    "@types/debounce": "^1.2.1",
     "prettier": "^2.7.1",
     "rimraf": "^3.0.2",
     "typescript": "^4.8.4"
