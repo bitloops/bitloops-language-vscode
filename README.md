@@ -35,7 +35,7 @@ No known issues.
 
 ### 0.3.3
 
-Refactored state manager, added rebounce, updated transpiler & validator, added restart command
+Refactored state manager, added debounce, updated transpiler & validator, added restart command
 
 ---
 
