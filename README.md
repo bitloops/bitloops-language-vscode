@@ -33,9 +33,9 @@ No known issues.
 
 ## What's New
 
-### 0.3.2
+### 0.3.3
 
-Added new keywords of the Bitloops Language (DomainEvent, IntegrationEvent, DomainService)
+Refactored state manager, added rebounce, updated transpiler & validator, added restart command
 
 ---
 
