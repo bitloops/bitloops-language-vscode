@@ -6,6 +6,7 @@ import {
   Transpiler,
   ValidationErrors,
   ParserSyntacticErrors,
+  TSymbolTableSemantics,
 } from '@bitloops/bl-transpiler';
 import { Diagnostic } from 'vscode-languageserver/node.js';
 import { TextDocument } from 'vscode-languageserver-textdocument';
@@ -15,6 +16,7 @@ import { TFileId } from '../../../types.js';
 import { StateManager, TFileDiagnostics } from '../../services/StateManager.js';
 
 export class BitloopsAnalyzer implements IAnalyzer {
+  symbolTable: ParserSyntacticErrors | TSymbolTableSemantics;
   constructor(private stateManager: StateManager) {}
 
   analyze(): TFileDiagnostics {
@@ -32,6 +34,14 @@ export class BitloopsAnalyzer implements IAnalyzer {
       // console.log(
       //   'Info:',
       //   transpilerInput.core.map((x) => ({ bc: x.boundedContext, mod: x.module })),
+      // );
+      this.symbolTable = transpiler.getSymbolTable(transpilerInput);
+
+      // console.log('Testing SymbolTable JsonValue....\n', test.symbolTables['Test'].getJsonValue());
+      // console.log('Testing SymbolTable....\n', test.symbolTables['Test']);
+      // console.log(
+      //   'Testing SymbolTable.... AccountEntity\n',
+      //   JSON.stringify(test.symbolTables['Test'].getJsonValue().children.AccountEntity),
       // );
       const intermediateModelOrErrors = transpiler.bitloopsCodeToIntermediateModel(transpilerInput);
       if (Transpiler.isTranspilerError(intermediateModelOrErrors)) {
@@ -123,5 +133,8 @@ export class BitloopsAnalyzer implements IAnalyzer {
         ),
       ]);
     }
+  }
+  public getSymbolTable(): ParserSyntacticErrors | TSymbolTableSemantics {
+    return this.symbolTable;
   }
 }

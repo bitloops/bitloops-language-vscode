@@ -8,6 +8,10 @@ import {
   DidChangeConfigurationNotification,
   WorkspaceFolder,
   DidChangeWatchedFilesParams,
+  TextDocumentPositionParams,
+  Hover,
+  HoverParams,
+  Position,
 } from 'vscode-languageserver/node.js';
 
 import { TextDocument } from 'vscode-languageserver-textdocument';
@@ -22,6 +26,7 @@ import { FileUtils } from '../utils/file.js';
 import { handleChangeOnWatchedFiles } from './handlers/watched-files-changed/index.js';
 import { fileURLToPath } from 'url';
 import { StateManager } from './services/StateManager.js';
+import { handleHover } from './handlers/hover-handler/hover.js';
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -124,6 +129,7 @@ export class BitloopsServer {
           resolveProvider: true,
           triggerCharacters: ['.'],
         },
+        hoverProvider: true,
       },
     };
     if (this.hasWorkspaceFolderCapability) {
@@ -170,10 +176,15 @@ export class BitloopsServer {
     );
   }
 
+  public onHover(params: HoverParams): Hover {
+    return handleHover(this.stateManager, this.analyzer, params);
+  }
+
   private async validateWorkspace(workspaceFolders: WorkspaceFolder[]): Promise<void> {
     for (const workspaceFolder of workspaceFolders) {
-      // TODO use fileURLToPath instead
-      const workspaceRoot = path.resolve(workspaceFolder.uri.replace('file://', ''));
+      // const workspaceRoot = path.resolve(workspaceFolder.uri.replace('file://', ''));
+      const workspaceRoot = fileURLToPath(workspaceFolder.uri);
+
       // For now we only handle 1 setup.bl file, consequently only 1 bl project
       // Perhaps we would isolate each project, having its own analyzer
 
