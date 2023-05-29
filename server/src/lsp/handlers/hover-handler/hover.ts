@@ -17,10 +17,11 @@ export const handleHover = (
   let word = findWord(document, position);
   const symbolTable = analyzer.getSymbolTable() as TSymbolTableSemantics;
   const testSymbolTable = symbolTable.symbolTables[boundedContext];
-  let { type, isConst } = testSymbolTable.findTypeOfKeyword(word, {
+  const typeOfKeyword = testSymbolTable?.findTypeOfKeyword(word, {
     line: position.line,
     column: position.character,
   });
+  let { type, isConst } = typeOfKeyword || { type: null, isConst: null };
   if (type) {
     if (type === '') type = 'unknown'; //if the type is empty string, it means that the variable is unknown
     if (isConst) word = 'const ' + word; //add const keyword to the hover info if the word is a constant

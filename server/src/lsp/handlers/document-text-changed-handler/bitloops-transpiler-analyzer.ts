@@ -37,12 +37,6 @@ export class BitloopsAnalyzer implements IAnalyzer {
       // );
       this.symbolTable = transpiler.getSymbolTable(transpilerInput);
 
-      // console.log('Testing SymbolTable JsonValue....\n', test.symbolTables['Test'].getJsonValue());
-      // console.log('Testing SymbolTable....\n', test.symbolTables['Test']);
-      // console.log(
-      //   'Testing SymbolTable.... AccountEntity\n',
-      //   JSON.stringify(test.symbolTables['Test'].getJsonValue().children.AccountEntity),
-      // );
       const intermediateModelOrErrors = transpiler.bitloopsCodeToIntermediateModel(transpilerInput);
       if (Transpiler.isTranspilerError(intermediateModelOrErrors)) {
         this.mapTranspilerErrorsToLSPDiagnostics(intermediateModelOrErrors);
