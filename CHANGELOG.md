@@ -4,6 +4,10 @@ All notable changes to the "bitloops-language" extension will be documented in t
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+### 0.4.0
+
+Added hover provider for type of variables
+
 ### 0.3.3
 
 Refactored state manager, added debounce, updated transpiler & validator, added restart command
