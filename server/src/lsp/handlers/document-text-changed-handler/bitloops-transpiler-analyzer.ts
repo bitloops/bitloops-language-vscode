@@ -6,6 +6,7 @@ import {
   Transpiler,
   ValidationErrors,
   ParserSyntacticErrors,
+  TSymbolTableSemantics,
 } from '@bitloops/bl-transpiler';
 import { Diagnostic } from 'vscode-languageserver/node.js';
 import { TextDocument } from 'vscode-languageserver-textdocument';
@@ -15,6 +16,7 @@ import { TFileId } from '../../../types.js';
 import { StateManager, TFileDiagnostics } from '../../services/StateManager.js';
 
 export class BitloopsAnalyzer implements IAnalyzer {
+  symbolTable: ParserSyntacticErrors | TSymbolTableSemantics;
   constructor(private stateManager: StateManager) {}
 
   analyze(): TFileDiagnostics {
@@ -33,6 +35,8 @@ export class BitloopsAnalyzer implements IAnalyzer {
       //   'Info:',
       //   transpilerInput.core.map((x) => ({ bc: x.boundedContext, mod: x.module })),
       // );
+      this.symbolTable = transpiler.getSymbolTable(transpilerInput);
+
       const intermediateModelOrErrors = transpiler.bitloopsCodeToIntermediateModel(transpilerInput);
       if (Transpiler.isTranspilerError(intermediateModelOrErrors)) {
         this.mapTranspilerErrorsToLSPDiagnostics(intermediateModelOrErrors);
@@ -123,5 +127,8 @@ export class BitloopsAnalyzer implements IAnalyzer {
         ),
       ]);
     }
+  }
+  public getSymbolTable(): ParserSyntacticErrors | TSymbolTableSemantics {
+    return this.symbolTable;
   }
 }

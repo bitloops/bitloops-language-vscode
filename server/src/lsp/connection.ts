@@ -38,6 +38,7 @@ export class LspConnection {
     this.connection.onCompletionResolve(server.completionResolve.bind(server));
 
     this.connection.onDidChangeWatchedFiles(server.onDidChangeWatchedFiles.bind(server));
+    this.connection.onHover(server.onHover.bind(server));
 
     return this;
   }
