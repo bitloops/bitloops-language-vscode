@@ -33,9 +33,9 @@ No known issues.
 
 ## What's New
 
-### 0.3.3
+### 0.4.0
 
-Refactored state manager, added debounce, updated transpiler & validator, added restart command
+Added hover provider for type of variables
 
 ---
 
