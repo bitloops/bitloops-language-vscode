@@ -8,7 +8,7 @@ export const handleHover = (
   stateManager: StateManager,
   analyzer: IAnalyzer,
   params: HoverParams,
-): Hover => {
+): Hover | null => {
   const fileContent = stateManager.getFileContent(params.textDocument.uri);
   const document = TextDocument.create(params.textDocument.uri, 'bitloops', 1, fileContent);
   const position = params.position;
@@ -16,6 +16,7 @@ export const handleHover = (
 
   let word = findWord(document, position);
   const symbolTable = analyzer.getSymbolTable() as TSymbolTableSemantics;
+  if (!symbolTable) return null;
   const testSymbolTable = symbolTable.symbolTables[boundedContext];
   const typeOfKeyword = testSymbolTable?.findTypeOfKeyword(word, {
     line: position.line,
