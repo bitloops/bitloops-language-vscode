@@ -20,6 +20,7 @@ export const handleHover = (
   const typeOfKeyword = testSymbolTable?.findTypeOfKeyword(word, {
     line: position.line,
     column: position.character,
+    fileId: params.textDocument.uri,
   });
   let { type, isConst } = typeOfKeyword || { type: null, isConst: null };
   if (type) {
@@ -74,5 +75,6 @@ const findWord = (document: TextDocument, position: Position): string => {
       currentPosition += myLength + 1;
     }
   }
+  console.log('MATCHES', allMatches);
   return undefined;
 };
