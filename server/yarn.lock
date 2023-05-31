@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@bitloops/bl-transpiler@^0.6.10":
-  version "0.6.10"
-  resolved "https://registry.yarnpkg.com/@bitloops/bl-transpiler/-/bl-transpiler-0.6.10.tgz#5acbfb349963b91bfe3628154f8285a6b3c9ff85"
-  integrity sha512-MUrjH7lWVD42fZv1OQnSCwO97OZhm1io3GYv+1AZ2rgIT9MczJCASY4BtB/LqkB9zevReo3KFX0XF/5Yhpr5Hw==
+"@bitloops/bl-transpiler@^0.6.11":
+  version "0.6.11"
+  resolved "https://registry.yarnpkg.com/@bitloops/bl-transpiler/-/bl-transpiler-0.6.11.tgz#6be3bf6bab6a7915539708a8b18c05d573417227"
+  integrity sha512-rE39fr4cupvIrkefxY3G0aZQ6eugZK0DXSLL8BOc6vHXNemCJ1Hi1+eDUqurlcv4Wh+AfzCjlaT6F/Xg0M/U2A==
   dependencies:
     antlr4 "4.11.0"
     lodash "^4.17.21"
