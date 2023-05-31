@@ -10,7 +10,7 @@
   "type": "module",
   "scripts": {},
   "dependencies": {
-    "@bitloops/bl-transpiler": "^0.6.10",
+    "@bitloops/bl-transpiler": "^0.6.11",
     "debounce": "^1.2.1",
     "fs": "^0.0.1-security",
     "path": "^0.12.7",
