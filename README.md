@@ -33,9 +33,9 @@ No known issues.
 
 ## What's New
 
-### 0.4.0
+### 0.4.1
 
-Added hover provider for type of variables
+Fixed bug of hover for multiple files workspace
 
 ---
 
