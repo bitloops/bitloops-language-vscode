@@ -33,9 +33,9 @@ No known issues.
 
 ## What's New
 
-### 0.4.1
+### 0.4.3
 
-Fixed bug of hover for multiple files workspace
+Fixed bug of hover for file not valid location.
 
 ---
 
