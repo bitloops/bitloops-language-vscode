@@ -49,6 +49,17 @@ jobs:
       - name: Install vsce
         run: npm install -g vsce
 
+      - name: Check if VSCE_TOKEN is set
+        run: |
+          if [[ -z "${VSCE_TOKEN}" ]]; then
+            echo "VSCE_TOKEN is empty"
+            exit 1
+          else
+            echo "VSCE_TOKEN is not empty"
+          fi
+        env:
+          VSCE_TOKEN: ${{ secrets.VSCE_TOKEN }}
+
       - name: Publish to Marketplace
         env:
           VSCE_TOKEN: ${{ secrets.VSCE_TOKEN }}
