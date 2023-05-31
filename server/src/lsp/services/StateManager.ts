@@ -229,4 +229,8 @@ export class StateManager {
     const module = filePathParts[2];
     return { boundedContext, module };
   }
+
+  public getBoundedContext(fileUri: string): string {
+    return this.extractFileBoundedContextAndModule(fileUri).boundedContext;
+  }
 }
