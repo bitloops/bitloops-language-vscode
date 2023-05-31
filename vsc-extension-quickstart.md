@@ -14,7 +14,7 @@ When you run `tsc -b` in the root project, it will recursively build all the ref
 ## Get up and running straight away
 
 - `yarn`
-- `npm run compile`
+- `yarn compile`
 - Make sure the language configuration settings in `language-configuration.json` are accurate.
 - Press `F5` to open a new window with your extension loaded.
 - Create a new file with a file name suffix matching your language.
