@@ -75,6 +75,5 @@ const findWord = (document: TextDocument, position: Position): string => {
       currentPosition += myLength + 1;
     }
   }
-  console.log('MATCHES', allMatches);
   return undefined;
 };
