@@ -4,6 +4,10 @@ All notable changes to the "bitloops-language" extension will be documented in t
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+### 0.4.4
+
+Fixed bug of hover.
+
 ### 0.4.3
 
 Fixed bug of hover for file not valid location.

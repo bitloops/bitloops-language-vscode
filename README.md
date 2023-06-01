@@ -33,9 +33,9 @@ No known issues.
 
 ## What's New
 
-### 0.4.3
+### 0.4.4
 
-Fixed bug of hover for file not valid location.
+Fixed bug of hover.
 
 ---
 
