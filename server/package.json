@@ -1,7 +1,7 @@
 {
   "name": "bitloops-lsp-server",
   "description": "BitLoops Language Server",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "publisher": "Bitloops",
   "license": "MIT",
   "engines": {
