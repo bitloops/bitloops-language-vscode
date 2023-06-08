@@ -1,7 +1,7 @@
 {
   "name": "bitloops-lsp-server",
   "description": "BitLoops Language Server",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "publisher": "Bitloops",
   "license": "MIT",
   "engines": {
@@ -10,7 +10,7 @@
   "type": "module",
   "scripts": {},
   "dependencies": {
-    "@bitloops/bl-transpiler": "^0.6.11",
+    "@bitloops/bl-transpiler": "^0.7.0",
     "debounce": "^1.2.1",
     "fs": "^0.0.1-security",
     "path": "^0.12.7",

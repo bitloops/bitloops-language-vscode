@@ -15,7 +15,7 @@ export const handleHover = (
   const boundedContext = stateManager.getBoundedContext(params.textDocument.uri);
   if (boundedContext === 'unknown') return null; //if the bounded context is unknown, we don't want to have hover provider
   let word = findWord(document, position);
-  const symbolTable = analyzer.getSymbolTable() as TSymbolTableSemantics;
+  const symbolTable = analyzer.getSymbolTable();
   if (!symbolTable) return null;
   const testSymbolTable = symbolTable.symbolTables[boundedContext];
   const typeOfKeyword = testSymbolTable?.findTypeOfKeyword(word, {
