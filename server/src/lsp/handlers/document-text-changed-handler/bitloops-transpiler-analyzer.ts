@@ -16,7 +16,7 @@ import { TFileId } from '../../../types.js';
 import { StateManager, TFileDiagnostics } from '../../services/StateManager.js';
 
 export class BitloopsAnalyzer implements IAnalyzer {
-  symbolTable: ParserSyntacticErrors | TSymbolTableSemantics;
+  symbolTable: TSymbolTableSemantics | null;
   constructor(private stateManager: StateManager) {}
 
   analyze(): TFileDiagnostics {
@@ -35,13 +35,14 @@ export class BitloopsAnalyzer implements IAnalyzer {
       //   'Info:',
       //   transpilerInput.core.map((x) => ({ bc: x.boundedContext, mod: x.module })),
       // );
-      this.symbolTable = transpiler.getSymbolTable(transpilerInput);
+      this.symbolTable = transpiler.getSymbolTable(transpilerInput) as TSymbolTableSemantics;
 
       const intermediateModelOrErrors = transpiler.bitloopsCodeToIntermediateModel(transpilerInput);
       if (Transpiler.isTranspilerError(intermediateModelOrErrors)) {
         this.mapTranspilerErrorsToLSPDiagnostics(intermediateModelOrErrors);
         return this.stateManager.getDiagnostics();
       }
+
       console.log('Workspace analysis completed without errors');
       return this.stateManager.getDiagnostics();
     } catch (e) {
@@ -52,6 +53,7 @@ export class BitloopsAnalyzer implements IAnalyzer {
 
   private mapTranspilerErrorsToLSPDiagnostics(transpilerErrors: TranspilerErrors): void {
     if (isParserErrors(transpilerErrors)) {
+      this.symbolTable = null; //symbolTable is not available if there are parser errors
       this.mapParserErrorsToLSPDiagnostics(transpilerErrors);
       return;
     }
@@ -128,7 +130,10 @@ export class BitloopsAnalyzer implements IAnalyzer {
       ]);
     }
   }
-  public getSymbolTable(): ParserSyntacticErrors | TSymbolTableSemantics {
+  public getSymbolTable(): TSymbolTableSemantics | null {
+    if (!this.symbolTable) {
+      return null;
+    }
     return this.symbolTable;
   }
 }

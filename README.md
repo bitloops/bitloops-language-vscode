@@ -33,9 +33,9 @@ No known issues.
 
 ## What's New
 
-### 0.4.4
+### 0.4.5
 
-Fixed bug of hover.
+Updated version of bitloops-transpiler, no hover if there are syntactic errors.
 
 ---
 
