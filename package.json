@@ -9,7 +9,7 @@
   },
   "icon": "assets/images/bitloops-language-logo-256x256.png",
   "license": "MIT",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "scripts": {
     "vs:package": "vsce package",
     "vs:publish": "vsce publish",
