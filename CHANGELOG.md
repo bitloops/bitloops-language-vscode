@@ -4,6 +4,10 @@ All notable changes to the "bitloops-language" extension will be documented in t
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+### 0.4.6
+
+Updated version of bitloops-transpiler, added Iterator loop.
+
 ### 0.4.5
 
 Updated version of bitloops-transpiler, no hover if there are syntactic errors.
