@@ -33,9 +33,9 @@ No known issues.
 
 ## What's New
 
-### 0.4.6
+### 0.4.7
 
-Updated version of bitloops-transpiler, added Iterator for-of loop.
+Fixed hover error.
 
 ---
 

@@ -41,15 +41,15 @@ export const handleHover = (
 };
 
 const findWord = (document: TextDocument, position: Position): string => {
-  const line = document.getText().split('\n')[position.line]; //get the current line
-  let currentPosition = line.indexOf(line.trimStart()[0]); //get the position of the first non-whitespace character
-  const wordRegExp = /\b[\w.]+\b\(?/g; //find all words, including those which contain dots or opening parentheses
-  const matches = line.match(wordRegExp) || [];
-  const allMatches = []; //this array will contain all the matches, including the words which contain dots incrementally
-  //for example: if the word is this.accountRepo.getById(accountId).ifError(), the array will contain the following elements:
-  //[this, this.accountRepo, this.accountRepo.getById(), accountId, this.accountRepo.getById().ifError()] in this order
-  for (const match of matches) {
-    try {
+  try {
+    const line = document.getText().split('\n')[position.line]; //get the current line
+    let currentPosition = line.indexOf(line.trimStart()[0]); //get the position of the first non-whitespace character
+    const wordRegExp = /\b[\w.]+\b\(?/g; //find all words, including those which contain dots or opening parentheses
+    const matches = line.match(wordRegExp) || [];
+    const allMatches = []; //this array will contain all the matches, including the words which contain dots incrementally
+    //for example: if the word is this.accountRepo.getById(accountId).ifError(), the array will contain the following elements:
+    //[this, this.accountRepo, this.accountRepo.getById(), accountId, this.accountRepo.getById().ifError()] in this order
+    for (const match of matches) {
       if (match.includes('.')) {
         const separateMatches = match.split('.');
         let i = 1;
@@ -65,10 +65,8 @@ const findWord = (document: TextDocument, position: Position): string => {
       //for methods: we keep the opening parenthesis in the matched word so we can separate the method from the variable and then we add the closing parenthesis
       //because in the symbolTable it is stored as a method call, for example this.accountRepo.getById()
       else allMatches.push(match);
-    } catch (e) {}
-  }
-  for (let i = 0; i < allMatches.length; i++) {
-    try {
+    }
+    for (let i = 0; i < allMatches.length; i++) {
       let myLength = allMatches[i].length;
       if (allMatches[i].includes('.')) {
         myLength -= allMatches[i - 1].length;
@@ -81,7 +79,7 @@ const findWord = (document: TextDocument, position: Position): string => {
       } else {
         currentPosition += myLength + 1;
       }
-    } catch (e) {}
-  }
+    }
+  } catch (e) {}
   return undefined;
 };
